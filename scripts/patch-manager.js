@@ -5,9 +5,13 @@
  * Manages git patches for vendor modifications
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PATCHES_DIR = path.join(__dirname, '..', 'patches');
 const VENDOR_DIR = path.join(__dirname, '..', 'vendor', 'opencode');
@@ -15,7 +19,8 @@ const VENDOR_DIR = path.join(__dirname, '..', 'vendor', 'opencode');
 // List of patches in order
 const PATCHES = [
   '001-heimdall-complete-branding.patch',
-  '002-enhanced-agents-discovery.patch'
+  '002-enhanced-agents-discovery.patch',
+  '003-heimdall-ascii-art-branding.patch'
 ];
 
 class PatchManager {
