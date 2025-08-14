@@ -1,0 +1,44 @@
+#!/usr/bin/env bun
+/**
+ * Heimdall CLI executable
+ * This script sets up the environment and launches the vendored opencode CLI
+ */
+
+import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { getHeimdallEnv, HEIMDALL_CONFIG } from '../src/cli/heimdall-config.ts';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Display Heimdall branding on first run
+if (process.argv.length === 2 || process.argv.includes('--help')) {
+  console.log(HEIMDALL_CONFIG.branding.logo);
+  console.log(`\n${HEIMDALL_CONFIG.description} v${HEIMDALL_CONFIG.version}\n`);
+}
+
+// Set up Heimdall environment variables
+const heimdallEnv = getHeimdallEnv();
+Object.assign(process.env, heimdallEnv);
+
+// Path to the vendored opencode CLI
+const opencodePath = join(__dirname, '..', 'vendor', 'opencode', 'packages', 'opencode', 'src', 'index.ts');
+
+// Forward all arguments to opencode
+const args = process.argv.slice(2);
+
+// Use bun to run the TypeScript directly with development conditions
+const child = spawn('bun', ['run', '--conditions=development', opencodePath, ...args], {
+  stdio: 'inherit',
+  env: process.env,
+});
+
+child.on('exit', (code) => {
+  process.exit(code || 0);
+});
+
+child.on('error', (err) => {
+  console.error('Failed to start Heimdall:', err);
+  process.exit(1);
+});

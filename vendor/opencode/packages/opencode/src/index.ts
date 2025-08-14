@@ -37,7 +37,7 @@ process.on("uncaughtException", (e) => {
 })
 
 const cli = yargs(hideBin(process.argv))
-  .scriptName("opencode")
+  .scriptName("heimdall")
   .help("help", "show help")
   .version("version", "show version number", Installation.VERSION)
   .alias("version", "v")
@@ -61,9 +61,9 @@ const cli = yargs(hideBin(process.argv))
       })(),
     })
 
-    process.env["OPENCODE"] = "1"
+    process.env["HEIMDALL"] = "1"
 
-    Log.Default.info("opencode", {
+    Log.Default.info("heimdall", {
       version: Installation.VERSION,
       args: process.argv.slice(2),
     })

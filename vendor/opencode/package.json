@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "opencode",
+  "name": "heimdall",
   "private": true,
   "type": "module",
   "packageManager": "bun@1.2.19",
   "scripts": {
-    "dev": "bun run --conditions=development packages/opencode/src/index.ts",
+    "dev": "bun run --conditions=development packages/heimdall/src/index.ts",
     "typecheck": "bun run --filter='*' typecheck",
     "stainless": "./scripts/stainless",
     "postinstall": "./script/hooks"
@@ -36,7 +36,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sst/opencode"
+    "url": "https://github.com/sst/heimdall"
   },
   "license": "MIT",
   "prettier": {

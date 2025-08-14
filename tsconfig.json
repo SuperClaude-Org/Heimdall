@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "baseUrl": ".",
+    "paths": {
+      "@heimdall/*": ["./src/*"],
+      "@vendor/opencode/*": ["./vendor/opencode/packages/opencode/src/*"],
+      "@vendor/tui/*": ["./vendor/opencode/packages/tui/src/*"],
+      "@vendor/sdk/*": ["./vendor/opencode/packages/sdk/src/*"]
+    },
+    "types": ["node"]
+  },
+  "include": [
+    "src/**/*",
+    "vendor/opencode/packages/opencode/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "vendor/opencode/node_modules",
+    "vendor/opencode/packages/*/node_modules"
+  ]
+}
