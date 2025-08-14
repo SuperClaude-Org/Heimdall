@@ -2,133 +2,113 @@
 
 ## Overview
 
-Heimdall uses Git subtree to vendor the opencode CLI. This approach provides a self-contained repository while allowing us to pull updates from upstream.
+Heimdall uses Git subtree to vendor the opencode CLI, with a patch-based system for customizations. This approach keeps the vendor directory pristine while allowing modifications that survive updates.
 
-## Directory Structure
+## Architecture
 
 ```
-Heimdall/
-├── vendor/
-│   └── opencode/        # Subtree copy of sst/opencode
-├── src/                 # Heimdall-specific code
-├── scripts/             # Maintenance scripts
-│   ├── rebrand.js       # Rebranding automation
-│   └── update-vendor.sh # Update script
-└── bin/                 # Executable scripts
-    └── heimdall         # Main CLI entry point
+heimdall/
+├── vendor/opencode/     # Pristine opencode (never modify directly)
+├── patches/             # Git patches for all customizations
+├── scripts/
+│   ├── patch-manager.js # Manage patches
+│   └── update.sh        # Update workflow
+├── bin/
+│   └── heimdall         # Simple launcher
+└── src/extensions/      # Future: new commands/features
 ```
 
-## Updating the Vendored Code
+## Working with Patches
 
-### Automatic Update
-
-Run the update script to pull latest changes from opencode:
-
+### Apply Patches
 ```bash
-npm run update:vendor
-# or
-bash scripts/update-vendor.sh
+npm run patch:apply
 ```
 
-This script will:
-1. Fetch latest changes from opencode repository
-2. Merge them into the vendor/opencode directory
-3. Run the rebranding script
-4. Install dependencies
-5. Run tests (if available)
-
-### Manual Update
-
-If you need more control over the update process:
-
+### Create a New Patch
+1. Make changes to vendor files
+2. Create patch from changes:
 ```bash
-# Fetch latest from opencode
-git fetch opencode dev
+git diff vendor/ > patches/003-my-feature.patch
+# Or use the patch manager
+npm run patch:create "my-feature" "Description of changes"
+```
+3. Revert vendor changes
+4. Apply patch to test
 
-# Merge into subtree
+### List Patches
+```bash
+npm run patch:list
+```
+
+### Revert Patches
+```bash
+npm run patch:revert
+```
+
+## Updating Vendor
+
+Run the update script:
+```bash
+npm run update
+```
+
+This will:
+1. Revert all patches
+2. Pull latest opencode via subtree
+3. Reapply patches (reports conflicts)
+4. Run basic tests
+
+### Manual Update Process
+```bash
+# 1. Revert patches
+npm run patch:revert
+
+# 2. Update vendor
 git subtree pull --prefix=vendor/opencode opencode dev --squash
 
-# Run rebranding
-npm run rebrand
+# 3. Reapply patches
+npm run patch:apply
 
-# Test the changes
-npm test
+# 4. Fix any conflicts and recreate patches if needed
 ```
-
-## Rebranding Process
-
-The rebranding script (`scripts/rebrand.js`) performs selective replacements:
-
-### What Gets Rebranded
-- User-facing strings in package.json
-- CLI command names
-- Documentation references
-- Binary names
-
-### What Stays Original
-- Internal module references (to ease merging)
-- Code structure
-- API interfaces
-
-### Running Rebranding
-
-```bash
-# Dry run (preview changes)
-npm run rebrand:dry
-
-# Apply rebranding
-npm run rebrand
-```
-
-## Handling Merge Conflicts
-
-When pulling upstream changes, conflicts may occur in rebranded files:
-
-1. **Review conflicts carefully** - Check if the conflict is in rebranded code or original code
-2. **Preserve rebranding** - Keep Heimdall branding in user-facing elements
-3. **Accept upstream changes** - For internal code changes, prefer upstream version
-4. **Re-run rebranding** - After resolving conflicts, run `npm run rebrand`
 
 ## Best Practices
 
-1. **Regular Updates**: Pull upstream changes monthly or when critical updates are released
-2. **Test Thoroughly**: Always test after updates, especially CLI commands
-3. **Document Changes**: Keep a VENDOR_CHANGELOG.md with update history
-4. **Minimal Modifications**: Keep changes to vendor code minimal to reduce conflicts
-5. **Commit After Updates**: Always commit the vendor update as a separate commit
+1. **Never modify vendor/ directly** - Always use patches
+2. **Keep patches small** - Easier to maintain and resolve conflicts
+3. **Document patches** - Add descriptions when creating
+4. **Test after updates** - Ensure patches still work
+5. **Commit patches separately** - Makes history cleaner
 
 ## Troubleshooting
 
-### Binary Not Found
+### Patch Won't Apply
 ```bash
-# Rebuild the vendor dependencies
-cd vendor/opencode && bun install && bun run build
+# Check what's wrong
+git apply --check patches/001-example.patch
+
+# If it fails, manually apply changes and recreate patch
+# Edit the files as needed, then:
+git diff vendor/ > patches/001-example-fixed.patch
 ```
 
-### Rebranding Issues
-```bash
-# Check what would be changed
-npm run rebrand:dry
+### After Update Conflicts
+1. Try to apply each patch individually
+2. For failed patches, manually reapply changes
+3. Create new patch from the changes
+4. Replace old patch file
 
-# Manually review and fix if needed
-git diff vendor/opencode/
-```
+## Current Patches
 
-### Merge Conflicts
-```bash
-# Abort the subtree pull
-git merge --abort
+Check `patches/` directory for active customizations:
+- `002-heimdall-scriptname.patch` - Changes CLI name to "heimdall"
 
-# Try pulling without squash for easier conflict resolution
-git subtree pull --prefix=vendor/opencode opencode dev
+## Adding New Features
 
-# Or cherry-pick specific commits
-git cherry-pick <commit-hash>
-```
+For completely new functionality (not modifications), add to `src/extensions/`:
+- New commands in `src/extensions/commands/`
+- New providers in `src/extensions/providers/`
+- New tools in `src/extensions/tools/`
 
-## Version Tracking
-
-Track the vendored opencode version in:
-- `vendor/opencode/package.json` - Original version
-- `VENDOR_CHANGELOG.md` - Update history
-- Git commit messages - Use format: "Update opencode vendor to vX.X.X"
+These don't need patches as they're separate from vendor code.

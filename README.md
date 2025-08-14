@@ -10,15 +10,15 @@
 
 ## Overview
 
-Heimdall is a powerful AI-powered command-line interface that extends and customizes the opencode CLI with additional features and branding. It provides seamless integration with AI models for code generation, analysis, and automation tasks.
+Heimdall is a customized version of the opencode CLI with additional branding and features. It uses a clean vendor + patches approach to maintain customizations while allowing easy updates from upstream.
 
 ## Features
 
 - 🤖 **AI-Powered Assistance** - Leverage Claude, GPT-4, and other models
 - 🔧 **Code Generation** - Generate code, tests, and documentation
-- 📦 **Vendor Management** - Built on opencode with easy updates
-- 🎨 **Custom Branding** - Heimdall-themed interface
-- 🔄 **Seamless Updates** - Pull latest opencode improvements
+- 📦 **Clean Vendor Management** - Pristine vendor with patch-based customizations
+- 🎨 **Heimdall Branding** - Custom branding and identity
+- 🔄 **Easy Updates** - Pull latest opencode improvements with one command
 - ⚡ **Fast Performance** - Built with Bun for speed
 
 ## Installation
@@ -26,7 +26,7 @@ Heimdall is a powerful AI-powered command-line interface that extends and custom
 ### Prerequisites
 
 - Node.js >= 18.0.0
-- Bun runtime (for development)
+- Bun runtime
 - Git
 
 ### Quick Start
@@ -39,29 +39,14 @@ cd heimdall
 # Install dependencies
 bun install
 
-# Build the project
-bun run build
+# Apply customization patches
+npm run patch:apply
 
 # Run Heimdall
 ./bin/heimdall --help
 ```
 
-### Global Installation
-
-```bash
-# Install globally with npm
-npm install -g heimdall-cli
-
-# Or with bun
-bun install -g heimdall-cli
-
-# Run from anywhere
-heimdall --help
-```
-
 ## Usage
-
-### Basic Commands
 
 ```bash
 # Show help
@@ -70,111 +55,84 @@ heimdall --help
 # Check version
 heimdall --version
 
-# Run a command
-heimdall run [command]
-
 # Start interactive mode
-heimdall chat
-```
+heimdall
 
-### Configuration
-
-Create a configuration file at `~/.heimdall/config.json`:
-
-```json
-{
-  "defaultModel": "claude-3-5-sonnet-latest",
-  "defaultProvider": "anthropic",
-  "apiKeys": {
-    "anthropic": "your-api-key",
-    "openai": "your-api-key"
-  }
-}
-```
-
-### Environment Variables
-
-```bash
-export HEIMDALL_DEFAULT_MODEL="claude-3-5-sonnet-latest"
-export HEIMDALL_DEFAULT_PROVIDER="anthropic"
-export HEIMDALL_CONFIG_PATH="~/.heimdall"
+# Run a command
+heimdall run "explain this code"
 ```
 
 ## Architecture
 
-Heimdall uses a Git subtree approach to vendor opencode:
+Heimdall uses a simple and maintainable architecture:
 
 ```
 heimdall/
-├── vendor/opencode/  # Subtree of sst/opencode
-├── src/             # Heimdall-specific code
-├── scripts/         # Build and maintenance
-└── bin/            # CLI executables
+├── vendor/opencode/  # Pristine opencode (never modified)
+├── patches/          # Git patches for customizations
+├── bin/heimdall      # Simple launcher script
+└── scripts/          # Maintenance scripts
 ```
 
-This approach provides:
-- **Self-contained repository** - No submodule complexity
-- **Easy updates** - Pull upstream changes with one command
-- **Custom modifications** - Rebrand and extend as needed
-- **Version control** - Track all changes in one repo
+### How It Works
 
-## Development
+1. **Vendor**: opencode is vendored via git subtree - never modified directly
+2. **Patches**: All customizations are git patches in `patches/`
+3. **Launcher**: Simple script that runs opencode with our environment
+4. **Updates**: Pull upstream, reapply patches, done!
 
-### Setup Development Environment
+## Customization
+
+### Apply Existing Patches
+```bash
+npm run patch:apply
+```
+
+### Create New Customization
+```bash
+# 1. Make changes to vendor files
+vim vendor/opencode/...
+
+# 2. Create patch
+git diff vendor/ > patches/003-my-feature.patch
+
+# 3. Revert vendor and test patch
+git checkout vendor/
+npm run patch:apply
+```
+
+## Updating from Upstream
 
 ```bash
-# Install dependencies
-bun install
+# Automatic update
+npm run update
 
-# Run in development mode
-bun run dev
-
-# Run tests
-bun test
+# This will:
+# 1. Revert patches
+# 2. Pull latest opencode
+# 3. Reapply patches
+# 4. Report any conflicts
 ```
 
-### Update Vendored opencode
+## Scripts
 
-```bash
-# Pull latest opencode changes
-npm run update:vendor
-
-# Or manually
-git subtree pull --prefix=vendor/opencode opencode dev --squash
-npm run rebrand
-```
-
-### Project Scripts
-
-- `npm run build` - Build the project
-- `npm run dev` - Run in development mode
-- `npm run test` - Run tests
-- `npm run rebrand` - Apply Heimdall branding
-- `npm run update:vendor` - Update opencode vendor
+- `npm run dev` - Run Heimdall
+- `npm run patch:apply` - Apply all patches
+- `npm run patch:revert` - Revert all patches
+- `npm run patch:list` - List available patches
+- `npm run update` - Update vendor from upstream
 
 ## Documentation
 
-- [Development Guide](docs/DEVELOPMENT.md) - Development workflow and setup
-- [Vendor Management](docs/VENDOR_MANAGEMENT.md) - Managing the vendored opencode
-- [Integration Plan](Heimdall.md) - Original integration strategy
+- [Vendor Management](docs/VENDOR_MANAGEMENT.md) - How to manage vendor and patches
 
 ## Contributing
 
-We welcome contributions! Please see our [Development Guide](docs/DEVELOPMENT.md) for details on:
-
-1. Setting up your development environment
-2. Making changes
-3. Testing your modifications
-4. Submitting pull requests
-
-## Versioning
-
-Heimdall follows semantic versioning:
-- **Major**: Breaking changes to CLI interface
-- **Minor**: New features or commands
-- **Patch**: Bug fixes and minor improvements
-
-The vendored opencode version is tracked separately in `VENDOR_CHANGELOG.md`.
+1. Fork the repository
+2. Create your feature branch
+3. Make changes (preferably as patches)
+4. Test thoroughly
+5. Submit a pull request
 
 ## License
 
@@ -182,14 +140,8 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## Credits
 
-Heimdall is built on top of [opencode](https://github.com/sst/opencode) by SST. We're grateful for their excellent work on the core CLI functionality.
-
-## Support
-
-- 📖 [Documentation](docs/)
-- 🐛 [Issue Tracker](https://github.com/yourusername/heimdall/issues)
-- 💬 [Discussions](https://github.com/yourusername/heimdall/discussions)
+Heimdall is built on top of [opencode](https://github.com/sst/opencode) by SST.
 
 ---
 
-*Heimdall - Guarding the bridge between developers and AI*
+*Heimdall - Simple, maintainable, powerful*

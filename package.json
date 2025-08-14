@@ -8,18 +8,13 @@
     "heimdall": "./bin/heimdall"
   },
   "scripts": {
-    "build": "bun run build:heimdall",
-    "build:vendor": "cd vendor/opencode && bun install",
-    "build:heimdall": "bun build src/cli/index.ts --outdir=dist --target=node",
-    "dev": "bun run src/cli/index.ts",
-    "rebrand": "node scripts/rebrand.js",
-    "rebrand:dry": "node scripts/rebrand.js --dry-run",
-    "update:vendor": "bash scripts/update-vendor.sh",
+    "dev": "./bin/heimdall",
     "patch:apply": "node scripts/patch-manager.js apply",
     "patch:revert": "node scripts/patch-manager.js revert",
     "patch:list": "node scripts/patch-manager.js list",
-    "test": "bun test",
-    "postinstall": "bun run build:vendor"
+    "patch:create": "node scripts/patch-manager.js create",
+    "update": "bash scripts/update.sh",
+    "postinstall": "cd vendor/opencode && bun install"
   },
   "dependencies": {
     "glob": "^10.3.10",

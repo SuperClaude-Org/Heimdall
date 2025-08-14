@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Heimdall Update Script - Layered Architecture
-# Updates vendor while preserving all customizations
+# Heimdall Update Script
+# Updates vendor while preserving customizations via patches
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
-echo "================================================"
-echo "Heimdall Update Process - Layered Architecture"
-echo "================================================"
+echo "================================"
+echo "Heimdall Update Process"
+echo "================================"
 echo ""
 
 # Step 1: Check for uncommitted changes
@@ -114,9 +114,9 @@ fi
 
 # Step 9: Summary
 echo ""
-echo "================================================"
+echo "================================"
 echo "Update Summary"
-echo "================================================"
+echo "================================"
 
 # Check if there were any warnings
 if grep -q "⚠️" /tmp/heimdall-update.log 2>/dev/null; then
