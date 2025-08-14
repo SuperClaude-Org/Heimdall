@@ -24,7 +24,7 @@ if (process.argv.length === 2 || process.argv.includes('--help')) {
 ╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝
 
 Heimdall v${process.env.HEIMDALL_VERSION} - AI-powered CLI assistant
-Based on opencode v0.4.45
+Based on opencode
 `);
 }
 
@@ -33,7 +33,7 @@ const args = process.argv.slice(2);
 const child = spawn('bun', [
   'run',
   '--conditions=development',
-  'packages/opencode/src/index.ts',
+  'packages/opencode/src/cli/bootstrap.ts',
   ...args
 ], {
   stdio: 'inherit',

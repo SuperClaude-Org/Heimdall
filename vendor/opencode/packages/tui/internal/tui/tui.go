@@ -831,21 +831,24 @@ func (a Model) home() (string, int, int) {
 	effectiveWidth := a.width - 4
 	baseStyle := styles.NewStyle().Background(t.Background())
 	base := baseStyle.Render
-	muted := styles.NewStyle().Foreground(t.TextMuted()).Background(t.Background()).Render
 
-	open := `
-█▀▀█ █▀▀█ █▀▀ █▀▀▄ 
-█░░█ █░░█ █▀▀ █░░█ 
-▀▀▀▀ █▀▀▀ ▀▀▀ ▀  ▀ `
-	code := `
-█▀▀ █▀▀█ █▀▀▄ █▀▀
-█░░ █░░█ █░░█ █▀▀
-▀▀▀ ▀▀▀▀ ▀▀▀  ▀▀▀`
+	heimdall := `
+██╗  ██╗███████╗██╗███╗   ███╗██████╗  █████╗ ██╗     ██╗     
+██║  ██║██╔════╝██║████╗ ████║██╔══██╗██╔══██╗██║     ██║     
+███████║█████╗  ██║██╔████╔██║██║  ██║███████║██║     ██║     
+██╔══██║██╔══╝  ██║██║╚██╔╝██║██║  ██║██╔══██║██║     ██║     
+██║  ██║███████╗██║██║ ╚═╝ ██║██████╔╝██║  ██║███████╗██████╗
+╚═╝  ╚═╝╚══════╝╚═╝╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝╚══════╝╚═════╝`
+	
+	bifrost := `◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊═◊`
 
-	logo := lipgloss.JoinHorizontal(
-		lipgloss.Top,
-		muted(open),
-		base(code),
+	// Create rainbow colors for the Bifrost bridge using accent color
+	rainbowStyle := styles.NewStyle().Foreground(t.Accent()).Background(t.Background()).Render
+	
+	logo := lipgloss.JoinVertical(
+		lipgloss.Left,
+		base(heimdall),
+		rainbowStyle(bifrost),
 	)
 	// cwd := app.Info.Path.Cwd
 	// config := app.Info.Path.Config
