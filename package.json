@@ -9,10 +9,12 @@
   },
   "scripts": {
     "dev": "./bin/heimdall",
+    "test": "bash scripts/test.sh",
+    "build": "bash scripts/build.sh",
     "patch:apply": "node scripts/patch-manager.js apply",
     "patch:revert": "node scripts/patch-manager.js revert",
     "patch:list": "node scripts/patch-manager.js list",
-    "patch:create": "node scripts/patch-manager.js create",
+    "patch:create": "bash scripts/create-patch.sh",
     "update": "bash scripts/update.sh",
     "postinstall": "cd vendor/opencode && bun install"
   },

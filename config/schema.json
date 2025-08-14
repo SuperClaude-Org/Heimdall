@@ -1,0 +1,752 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://heimdall.ai/config.json",
+  "title": "Heimdall Configuration Schema",
+  "description": "Configuration schema for Heimdall CLI - Enhanced AI-powered assistant",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON schema reference for configuration validation",
+      "default": "https://heimdall.ai/config.json"
+    },
+    "rules": {
+      "type": "array",
+      "description": "Custom rule files with priority and validation options. Takes precedence over default AGENTS.md discovery.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Simple path to rule file (uses default priority 50)"
+          },
+          {
+            "type": "object",
+            "description": "Advanced rule configuration with options",
+            "required": ["path"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to rule file (absolute, relative, or glob pattern)",
+                "examples": [
+                  "AGENTS.md",
+                  "~/global-rules.md",
+                  "/etc/heimdall/rules.md",
+                  "docs/*.rules.md",
+                  ".heimdall/project.md"
+                ]
+              },
+              "priority": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "default": 50,
+                "description": "Loading priority (0-100, higher = later/override)"
+              },
+              "required": {
+                "type": "boolean",
+                "default": false,
+                "description": "Fail if file not found"
+              },
+              "maxSize": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Maximum file size in bytes"
+              },
+              "enabled": {
+                "type": "boolean",
+                "default": true,
+                "description": "Enable/disable this rule"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "examples": [
+        ["AGENTS.md", "PROJECT.md"],
+        [
+          {
+            "path": "critical-rules.md",
+            "priority": 90,
+            "required": true
+          },
+          {
+            "path": "~/company-standards.md",
+            "priority": 10,
+            "maxSize": 50000
+          }
+        ]
+      ]
+    },
+    "rulesConfig": {
+      "type": "object",
+      "description": "Global configuration for rule loading behavior",
+      "properties": {
+        "failOnMissing": {
+          "type": "boolean",
+          "default": false,
+          "description": "Fail if any required rule file is missing"
+        },
+        "logLevel": {
+          "type": "string",
+          "enum": ["debug", "info", "warn", "error"],
+          "default": "info",
+          "description": "Logging level for rule loading"
+        },
+        "maxTotalSize": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Maximum combined size of all rule files in bytes"
+        },
+        "cacheDuration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cache duration in seconds (future feature)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "instructions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional instruction files or patterns to include (legacy, use 'rules' instead)",
+      "examples": [
+        ["~/instructions/*.md", "project-specific.md"]
+      ]
+    },
+    "theme": {
+      "type": "string",
+      "description": "Theme name to use for the interface",
+      "examples": ["dark", "light", "system"]
+    },
+    "model": {
+      "type": "string",
+      "description": "Default model to use in the format of provider/model",
+      "pattern": "^[a-z0-9-]+/[a-z0-9-._]+$",
+      "examples": [
+        "anthropic/claude-3-5-sonnet-latest",
+        "openai/gpt-4",
+        "google/gemini-pro"
+      ]
+    },
+    "small_model": {
+      "type": "string",
+      "description": "Small model to use for tasks like title generation",
+      "pattern": "^[a-z0-9-]+/[a-z0-9-._]+$",
+      "examples": [
+        "anthropic/claude-3-haiku",
+        "openai/gpt-3.5-turbo"
+      ]
+    },
+    "username": {
+      "type": "string",
+      "description": "Custom username to display in conversations",
+      "examples": ["Alice", "DevTeam"]
+    },
+    "agent": {
+      "type": "object",
+      "description": "Agent configurations for different modes",
+      "patternProperties": {
+        "^[a-z0-9-_]+$": {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "description": "Model to use for this agent"
+            },
+            "temperature": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2,
+              "description": "Temperature setting for response generation"
+            },
+            "top_p": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Top-p sampling parameter"
+            },
+            "prompt": {
+              "type": "string",
+              "description": "System prompt for this agent"
+            },
+            "tools": {
+              "type": "object",
+              "description": "Tool availability configuration",
+              "additionalProperties": {
+                "type": "boolean"
+              },
+              "examples": [
+                {
+                  "write": false,
+                  "edit": false,
+                  "bash": true,
+                  "read": true
+                }
+              ]
+            },
+            "disable": {
+              "type": "boolean",
+              "default": false,
+              "description": "Disable this agent"
+            },
+            "description": {
+              "type": "string",
+              "description": "Description of when to use this agent"
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["subagent", "primary", "all"],
+              "description": "Agent availability mode"
+            },
+            "permission": {
+              "type": "object",
+              "properties": {
+                "edit": {
+                  "$ref": "#/definitions/permission"
+                },
+                "bash": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/permission"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/definitions/permission"
+                      }
+                    }
+                  ]
+                },
+                "webfetch": {
+                  "$ref": "#/definitions/permission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "provider": {
+      "type": "object",
+      "description": "Custom provider configurations and model overrides",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "apiKey": {
+                "type": "string",
+                "description": "API key for the provider"
+              },
+              "baseURL": {
+                "type": "string",
+                "format": "uri",
+                "description": "Base URL for API requests"
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "description": "Model Context Protocol (MCP) server configurations",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "command"],
+            "properties": {
+              "type": {
+                "const": "local",
+                "description": "Local MCP server"
+              },
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Command and arguments to run the MCP server"
+              },
+              "environment": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Environment variables for the MCP server"
+              },
+              "enabled": {
+                "type": "boolean",
+                "default": true,
+                "description": "Enable or disable the MCP server"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": ["type", "url"],
+            "properties": {
+              "type": {
+                "const": "remote",
+                "description": "Remote MCP server"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL of the remote MCP server"
+              },
+              "headers": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Headers to send with requests"
+              },
+              "enabled": {
+                "type": "boolean",
+                "default": true,
+                "description": "Enable or disable the MCP server"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "examples": [
+        {
+          "morphllm": {
+            "type": "local",
+            "command": ["npx", "@morph-llm/morph-fast-apply"],
+            "environment": {
+              "MORPH_API_KEY": "your-key"
+            },
+            "enabled": true
+          },
+          "context7": {
+            "type": "remote",
+            "url": "https://mcp.context7.com/sse",
+            "enabled": true
+          }
+        }
+      ]
+    },
+    "keybinds": {
+      "type": "object",
+      "description": "Custom keybind configurations",
+      "properties": {
+        "leader": {
+          "type": "string",
+          "default": "ctrl+x",
+          "description": "Leader key for keybind combinations"
+        },
+        "app_help": {
+          "type": "string",
+          "default": "<leader>h",
+          "description": "Show help dialog"
+        },
+        "switch_agent": {
+          "type": "string",
+          "default": "tab",
+          "description": "Next agent"
+        },
+        "switch_agent_reverse": {
+          "type": "string",
+          "default": "shift+tab",
+          "description": "Previous agent"
+        },
+        "editor_open": {
+          "type": "string",
+          "default": "<leader>e",
+          "description": "Open external editor"
+        },
+        "session_export": {
+          "type": "string",
+          "default": "<leader>x",
+          "description": "Export session to editor"
+        },
+        "session_new": {
+          "type": "string",
+          "default": "<leader>n",
+          "description": "Create a new session"
+        },
+        "session_list": {
+          "type": "string",
+          "default": "<leader>l",
+          "description": "List all sessions"
+        },
+        "session_share": {
+          "type": "string",
+          "default": "<leader>s",
+          "description": "Share current session"
+        },
+        "session_interrupt": {
+          "type": "string",
+          "default": "esc",
+          "description": "Interrupt current session"
+        },
+        "session_compact": {
+          "type": "string",
+          "default": "<leader>c",
+          "description": "Compact the session"
+        },
+        "tool_details": {
+          "type": "string",
+          "default": "<leader>d",
+          "description": "Toggle tool details"
+        },
+        "thinking_blocks": {
+          "type": "string",
+          "default": "<leader>b",
+          "description": "Toggle thinking blocks"
+        },
+        "model_list": {
+          "type": "string",
+          "default": "<leader>m",
+          "description": "List available models"
+        },
+        "theme_list": {
+          "type": "string",
+          "default": "<leader>t",
+          "description": "List available themes"
+        },
+        "file_list": {
+          "type": "string",
+          "default": "<leader>f",
+          "description": "List files"
+        },
+        "file_close": {
+          "type": "string",
+          "default": "esc",
+          "description": "Close file"
+        },
+        "file_search": {
+          "type": "string",
+          "default": "<leader>/",
+          "description": "Search file"
+        },
+        "file_diff_toggle": {
+          "type": "string",
+          "default": "<leader>v",
+          "description": "Toggle between split/unified diff"
+        },
+        "project_init": {
+          "type": "string",
+          "default": "<leader>i",
+          "description": "Create/update AGENTS.md"
+        },
+        "input_clear": {
+          "type": "string",
+          "default": "ctrl+c",
+          "description": "Clear input field"
+        },
+        "input_paste": {
+          "type": "string",
+          "default": "ctrl+v",
+          "description": "Paste from clipboard"
+        },
+        "input_submit": {
+          "type": "string",
+          "default": "enter",
+          "description": "Submit input"
+        },
+        "input_newline": {
+          "type": "string",
+          "default": "shift+enter,ctrl+j",
+          "description": "Insert newline in input"
+        },
+        "messages_page_up": {
+          "type": "string",
+          "default": "pgup",
+          "description": "Scroll messages up by one page"
+        },
+        "messages_page_down": {
+          "type": "string",
+          "default": "pgdown",
+          "description": "Scroll messages down by one page"
+        },
+        "messages_previous": {
+          "type": "string",
+          "default": "ctrl+up",
+          "description": "Navigate to previous message"
+        },
+        "messages_next": {
+          "type": "string",
+          "default": "ctrl+down",
+          "description": "Navigate to next message"
+        },
+        "messages_copy": {
+          "type": "string",
+          "default": "<leader>y",
+          "description": "Copy message"
+        },
+        "messages_undo": {
+          "type": "string",
+          "default": "<leader>u",
+          "description": "Undo message"
+        },
+        "messages_redo": {
+          "type": "string",
+          "default": "<leader>r",
+          "description": "Redo message"
+        },
+        "app_exit": {
+          "type": "string",
+          "default": "ctrl+c,<leader>q",
+          "description": "Exit the application"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "formatter": {
+      "type": "object",
+      "description": "Code formatter configurations",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "disabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "command": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "environment": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "lsp": {
+      "type": "object",
+      "description": "Language Server Protocol configurations",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["disabled"],
+            "properties": {
+              "disabled": {
+                "const": true
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": ["command"],
+            "properties": {
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "extensions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "disabled": {
+                "type": "boolean",
+                "default": false
+              },
+              "env": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "initialization": {
+                "type": "object"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "plugin": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Plugin file paths or URLs"
+    },
+    "snapshot": {
+      "type": "boolean",
+      "description": "Enable snapshot functionality"
+    },
+    "share": {
+      "type": "string",
+      "enum": ["manual", "auto", "disabled"],
+      "description": "Control sharing behavior",
+      "default": "manual"
+    },
+    "autoupdate": {
+      "type": "boolean",
+      "description": "Automatically update to the latest version",
+      "default": true
+    },
+    "disabled_providers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Disable providers that are loaded automatically"
+    },
+    "permission": {
+      "type": "object",
+      "description": "Global permission settings",
+      "properties": {
+        "edit": {
+          "$ref": "#/definitions/permission"
+        },
+        "bash": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/permission"
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/permission"
+              }
+            }
+          ]
+        },
+        "webfetch": {
+          "$ref": "#/definitions/permission"
+        }
+      }
+    },
+    "experimental": {
+      "type": "object",
+      "description": "Experimental features",
+      "properties": {
+        "hook": {
+          "type": "object",
+          "properties": {
+            "file_edited": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["command"],
+                  "properties": {
+                    "command": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "environment": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "session_completed": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["command"],
+                "properties": {
+                  "command": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "permission": {
+      "type": "string",
+      "enum": ["ask", "allow", "deny"],
+      "description": "Permission level"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "$schema": "https://heimdall.ai/config.json",
+      "rules": [
+        "AGENTS.md",
+        {
+          "path": "~/company-standards.md",
+          "priority": 10,
+          "required": true
+        },
+        {
+          "path": ".heimdall/project-rules.md",
+          "priority": 50
+        }
+      ],
+      "rulesConfig": {
+        "logLevel": "info",
+        "maxTotalSize": 1000000
+      },
+      "model": "anthropic/claude-3-5-sonnet-latest",
+      "agent": {
+        "build": {
+          "temperature": 0.7,
+          "tools": {
+            "write": true,
+            "edit": true,
+            "bash": true
+          }
+        }
+      },
+      "mcp": {
+        "morphllm": {
+          "type": "local",
+          "command": ["npx", "@morph-llm/morph-fast-apply"],
+          "enabled": true
+        }
+      }
+    }
+  ]
+}

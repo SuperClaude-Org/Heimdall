@@ -1,0 +1,166 @@
+{
+  "$schema": "https://heimdall.ai/config.json",
+  "rules": [
+    "AGENTS.md",
+    {
+      "path": "~/company-standards.md",
+      "priority": 10,
+      "required": false,
+      "enabled": true
+    },
+    {
+      "path": ".heimdall/project-rules.md",
+      "priority": 50,
+      "maxSize": 50000
+    },
+    {
+      "path": "docs/**/*.rules.md",
+      "priority": 30,
+      "enabled": true
+    },
+    {
+      "path": "/etc/heimdall/critical-security.md",
+      "priority": 95,
+      "required": true,
+      "maxSize": 10000
+    }
+  ],
+  "rulesConfig": {
+    "failOnMissing": false,
+    "logLevel": "info",
+    "maxTotalSize": 1000000,
+    "cacheDuration": 300
+  },
+  "instructions": [
+    "legacy-instructions.md"
+  ],
+  "model": "anthropic/claude-3-5-sonnet-latest",
+  "small_model": "anthropic/claude-3-haiku",
+  "username": "Developer",
+  "theme": "dark",
+  "agent": {
+    "build": {
+      "description": "Full development mode",
+      "temperature": 0.7,
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "read": true
+      }
+    },
+    "plan": {
+      "description": "Planning without modifications",
+      "temperature": 0.3,
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "read": true
+      }
+    },
+    "review": {
+      "description": "Code review mode",
+      "model": "anthropic/claude-3-opus",
+      "temperature": 0.1,
+      "prompt": "Focus on best practices, security, and performance.",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "read": true
+      }
+    },
+    "debug": {
+      "description": "Debugging mode",
+      "temperature": 0.4,
+      "prompt": "Focus on root causes and fixes.",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "read": true
+      }
+    }
+  },
+  "mcp": {
+    "morphllm-fast-apply": {
+      "type": "local",
+      "command": ["npx", "@morph-llm/morph-fast-apply", "/home/user/"],
+      "environment": {
+        "MORPH_API_KEY": "your-api-key",
+        "ALL_TOOLS": "true"
+      },
+      "enabled": true
+    },
+    "serena": {
+      "type": "local",
+      "command": ["uvx", "--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server"],
+      "enabled": true
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/sse",
+      "enabled": true
+    }
+  },
+  "keybinds": {
+    "leader": "ctrl+x",
+    "switch_agent": "tab",
+    "switch_agent_reverse": "shift+tab",
+    "session_new": "<leader>n",
+    "session_list": "<leader>l",
+    "model_list": "<leader>m",
+    "file_list": "<leader>f",
+    "app_exit": "ctrl+c,<leader>q"
+  },
+  "formatter": {
+    "prettier": {
+      "command": ["npx", "prettier", "--write", "$FILE"],
+      "extensions": [".js", ".jsx", ".ts", ".tsx", ".json", ".md"]
+    },
+    "ruff": {
+      "command": ["ruff", "format", "$FILE"],
+      "extensions": [".py", ".pyi"]
+    }
+  },
+  "lsp": {
+    "typescript-language-server": {
+      "command": ["typescript-language-server", "--stdio"],
+      "extensions": [".js", ".jsx", ".ts", ".tsx"]
+    },
+    "pyright": {
+      "command": ["pyright-langserver", "--stdio"],
+      "extensions": [".py", ".pyi"]
+    }
+  },
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "rm": "deny",
+      "*": "ask"
+    },
+    "webfetch": "allow"
+  },
+  "experimental": {
+    "hook": {
+      "file_edited": {
+        ".py": [
+          {
+            "command": ["ruff", "check", "$FILE"],
+            "environment": {}
+          }
+        ]
+      },
+      "session_completed": [
+        {
+          "command": ["notify-send", "Heimdall", "Session completed"],
+          "environment": {}
+        }
+      ]
+    }
+  },
+  "share": "manual",
+  "autoupdate": true,
+  "snapshot": true,
+  "disabled_providers": []
+}

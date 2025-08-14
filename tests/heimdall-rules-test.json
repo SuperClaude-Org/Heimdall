@@ -1,0 +1,40 @@
+{
+  "$schema": "https://heimdall.ai/config.json",
+  "rules": [
+    "AGENTS.md",
+    {
+      "path": "test/rules/global/global-rules.md",
+      "priority": 10,
+      "required": false
+    },
+    {
+      "path": "test/rules/project/critical.md",
+      "priority": 90,
+      "required": true,
+      "maxSize": 10000
+    },
+    {
+      "path": "test/rules/docs/*.rules.md",
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "path": "~/nonexistent.md",
+      "priority": 5,
+      "required": false
+    },
+    {
+      "path": "test/rules/project/disabled.md",
+      "enabled": false
+    }
+  ],
+  "rulesConfig": {
+    "failOnMissing": false,
+    "logLevel": "debug",
+    "maxTotalSize": 1000000,
+    "cacheDuration": 300
+  },
+  "instructions": [
+    "test/rules/project/extra-instructions.md"
+  ]
+}

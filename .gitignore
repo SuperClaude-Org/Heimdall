@@ -7,8 +7,6 @@ node_modules/
 dist/
 build/
 *.tsbuildinfo
-.next
-out/
 
 # Logs
 logs/
@@ -17,7 +15,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-.pnpm-debug.log*
 
 # Runtime data
 pids
@@ -25,18 +22,7 @@ pids
 *.seed
 *.pid.lock
 
-# Cache
-.cache/
-.parcel-cache/
-.npm
-.eslintcache
-.stylelintcache
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-
-# Environment files
+# Environment variables
 .env
 .env.local
 .env.development.local
@@ -44,11 +30,7 @@ pids
 .env.production.local
 
 # IDE
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 .idea/
 *.swp
 *.swo
@@ -59,22 +41,24 @@ pids
 coverage/
 .nyc_output
 
-# Heimdall specific
-.heimdall/
-heimdall-*.log
+# Cache
+.npm
+.eslintcache
+.cache/
 
 # Temporary files
 tmp/
 temp/
-*.tmp
 
-# OS files
-Thumbs.db
-.DS_Store
+# User configuration
+heimdall.json
+opencode.json
 
-# Bun
-bun.lockb
-.bun/
+# Session data
+.heimdall/
+.opencode/
 
-# Don't ignore vendor (it's part of our repo via subtree)
-!vendor/
+# Lock files (we use bun.lock)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
