@@ -1,44 +1,108 @@
 #!/usr/bin/env bun
 /**
- * Heimdall CLI executable
- * This script sets up the environment and launches the vendored opencode CLI
+ * Heimdall CLI - Layered Architecture Entry Point
+ * Orchestrates all layers: patches, overrides, extensions, and injections
  */
 
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { getHeimdallEnv, HEIMDALL_CONFIG } from '../src/cli/heimdall-config.ts';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const rootDir = join(__dirname, '..');
+
+// Set up Heimdall environment
+process.env.HEIMDALL_VERSION = process.env.HEIMDALL_VERSION || '0.1.0';
+process.env.HEIMDALL_CONFIG_PATH = process.env.HEIMDALL_CONFIG_PATH || '~/.heimdall';
+process.env.HEIMDALL_CACHE_PATH = process.env.HEIMDALL_CACHE_PATH || '~/.heimdall/cache';
 
 // Display Heimdall branding on first run
 if (process.argv.length === 2 || process.argv.includes('--help')) {
-  console.log(HEIMDALL_CONFIG.branding.logo);
-  console.log(`\n${HEIMDALL_CONFIG.description} v${HEIMDALL_CONFIG.version}\n`);
+  console.log(`
+╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  
+╠═╣║╣ ║║║║ ║║╠═╣║  ║  
+╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝
+
+Heimdall - AI-powered CLI assistant v${process.env.HEIMDALL_VERSION}
+`);
 }
 
-// Set up Heimdall environment variables
-const heimdallEnv = getHeimdallEnv();
-Object.assign(process.env, heimdallEnv);
+// Check if we should use override or vendor
+const overridePath = join(rootDir, 'src', 'overrides', 'opencode', 'packages', 'opencode', 'src', 'index.ts');
+const vendorPath = join(rootDir, 'vendor', 'opencode', 'packages', 'opencode', 'src', 'index.ts');
 
-// Path to the vendored opencode CLI
-const opencodePath = join(__dirname, '..', 'vendor', 'opencode', 'packages', 'opencode', 'src', 'index.ts');
+// Use override if it exists, otherwise use vendor
+const entryPath = fs.existsSync(overridePath) ? overridePath : vendorPath;
 
-// Forward all arguments to opencode
+if (fs.existsSync(overridePath)) {
+  console.debug('[Heimdall] Using override entry point');
+}
+
+// Create a loader script that implements our layered architecture
+const loaderScript = `
+import { loader } from '${join(rootDir, 'src', 'core', 'loader.ts')}';
+import { patcher } from '${join(rootDir, 'src', 'core', 'patcher.ts')}';
+import { injector } from '${join(rootDir, 'src', 'core', 'injector.ts')}';
+import { extensionManager, autoDiscoverExtensions } from '${join(rootDir, 'src', 'extensions', 'index.ts')}';
+
+// Initialize layered architecture
+async function initHeimdall() {
+  console.debug('[Heimdall] Initializing layered architecture...');
+  
+  // Auto-discover extensions
+  await autoDiscoverExtensions();
+  
+  // Initialize extensions
+  await extensionManager.initializeAll();
+  
+  // Apply runtime patches
+  await patcher.applyAll();
+  
+  // Apply dependency injections
+  await injector.applyAll();
+  
+  console.debug('[Heimdall] Initialization complete');
+  
+  // Now import and run opencode
+  await import('${entryPath}');
+}
+
+initHeimdall().catch(console.error);
+`;
+
+// Write loader script to temp file
+const tempLoaderPath = join(rootDir, '.heimdall-loader.mjs');
+fs.writeFileSync(tempLoaderPath, loaderScript);
+
+// Forward all arguments to opencode via our loader
 const args = process.argv.slice(2);
 
-// Use bun to run the TypeScript directly with development conditions
-const child = spawn('bun', ['run', '--conditions=development', opencodePath, ...args], {
+// Use bun to run with our loader
+const child = spawn('bun', ['run', '--conditions=development', tempLoaderPath, ...args], {
   stdio: 'inherit',
   env: process.env,
+  cwd: rootDir
 });
 
 child.on('exit', (code) => {
+  // Clean up temp loader
+  try {
+    fs.unlinkSync(tempLoaderPath);
+  } catch (e) {
+    // Ignore cleanup errors
+  }
   process.exit(code || 0);
 });
 
 child.on('error', (err) => {
   console.error('Failed to start Heimdall:', err);
+  // Clean up temp loader
+  try {
+    fs.unlinkSync(tempLoaderPath);
+  } catch (e) {
+    // Ignore cleanup errors
+  }
   process.exit(1);
 });

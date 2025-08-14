@@ -15,11 +15,25 @@
     "rebrand": "node scripts/rebrand.js",
     "rebrand:dry": "node scripts/rebrand.js --dry-run",
     "update:vendor": "bash scripts/update-vendor.sh",
+    "patch:apply": "node scripts/patch-manager.js apply",
+    "patch:revert": "node scripts/patch-manager.js revert",
+    "patch:list": "node scripts/patch-manager.js list",
     "test": "bun test",
     "postinstall": "bun run build:vendor"
   },
   "dependencies": {
-    "glob": "^10.4.5"
+    "glob": "^10.3.10",
+    "yargs": "^18.0.0",
+    "zod": "^3.22.0",
+    "zod-openapi": "^4.1.0",
+    "@clack/prompts": "^1.0.0-alpha.1",
+    "hono": "^4.0.0",
+    "@hono/zod-validator": "^0.4.0",
+    "ai": "^5.0.0",
+    "remeda": "^2.0.0",
+    "diff": "^8.0.2",
+    "turndown": "^7.2.0",
+    "@modelcontextprotocol/sdk": "^1.15.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
