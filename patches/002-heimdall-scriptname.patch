@@ -1,0 +1,20 @@
+diff --git a/vendor/opencode/packages/opencode/src/index.ts b/vendor/opencode/packages/opencode/src/index.ts
+index 868c96ba..d201c704 100644
+--- a/vendor/opencode/packages/opencode/src/index.ts
++++ b/vendor/opencode/packages/opencode/src/index.ts
+@@ -37,7 +37,7 @@ process.on("uncaughtException", (e) => {
+ })
+ 
+ const cli = yargs(hideBin(process.argv))
+-  .scriptName("opencode")
++  .scriptName("heimdall")
+   .help("help", "show help")
+   .version("version", "show version number", Installation.VERSION)
+   .alias("version", "v")
+@@ -126,4 +126,4 @@ try {
+   process.exitCode = 1
+ }
+ 
+-cancel.abort()
++cancel.abort()
+\ No newline at end of file
