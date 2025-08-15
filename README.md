@@ -33,7 +33,7 @@ Heimdall is a customized version of the opencode CLI with additional branding an
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/heimdall.git
+git clone https://github.com/SuperClaude-Org/heimdall.git
 cd heimdall
 
 # Install dependencies
