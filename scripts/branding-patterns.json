@@ -1,0 +1,131 @@
+{
+  "description": "Pattern-based branding replacements for Heimdall",
+  "version": "1.0.0",
+  "replacements": [
+    {
+      "name": "API Documentation Title",
+      "files": ["vendor/opencode/packages/opencode/src/server/server.ts"],
+      "patterns": [
+        {
+          "search": "title: \"opencode\"",
+          "replace": "title: \"heimdall\"",
+          "context": "openAPISpecs.*documentation.*info"
+        },
+        {
+          "search": "description: \"opencode api\"",
+          "replace": "description: \"heimdall api\"",
+          "context": "openAPISpecs.*documentation.*info"
+        }
+      ]
+    },
+    {
+      "name": "Binary Names",
+      "files": ["vendor/opencode/packages/opencode/bin/opencode"],
+      "patterns": [
+        {
+          "search": "OPENCODE_BIN_PATH",
+          "replace": "HEIMDALL_BIN_PATH",
+          "global": true
+        },
+        {
+          "search": "name=\"opencode-${platform}-${arch}\"",
+          "replace": "name=\"heimdall-${platform}-${arch}\""
+        },
+        {
+          "search": "binary=\"opencode\"",
+          "replace": "binary=\"heimdall\""
+        },
+        {
+          "search": "binary=\"opencode.exe\"",
+          "replace": "binary=\"heimdall.exe\""
+        },
+        {
+          "search": "opencode CLI",
+          "replace": "heimdall CLI"
+        }
+      ]
+    },
+    {
+      "name": "Agent Directory",
+      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/agent.ts"],
+      "patterns": [
+        {
+          "search": ".opencode",
+          "replace": ".heimdall",
+          "context": "path\\.join.*agent"
+        }
+      ]
+    },
+    {
+      "name": "GitHub Workflow",
+      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/github.ts"],
+      "patterns": [
+        {
+          "search": "\".github/workflows/opencode.yml\"",
+          "replace": "\".github/workflows/heimdall.yml\""
+        },
+        {
+          "search": "name: opencode",
+          "replace": "name: heimdall",
+          "context": "workflow.*yml"
+        }
+      ]
+    },
+    {
+      "name": "CLI Error Messages",
+      "files": ["vendor/opencode/packages/opencode/src/cli/error.ts"],
+      "patterns": [
+        {
+          "search": "opencode",
+          "replace": "heimdall",
+          "context": "error.*message|console.*log"
+        }
+      ]
+    },
+    {
+      "name": "UI Branding",
+      "files": ["vendor/opencode/packages/opencode/src/cli/ui.ts"],
+      "patterns": [
+        {
+          "search": "opencode",
+          "replace": "heimdall",
+          "context": "title|header|brand"
+        }
+      ]
+    },
+    {
+      "name": "TUI ASCII Art",
+      "files": ["vendor/opencode/packages/tui/internal/tui/tui.go"],
+      "patterns": [
+        {
+          "search_multiline": "open := `\n█▀▀█ █▀▀█ █▀▀ █▀▀▄ \n█░░█ █░░█ █▀▀ █░░█ \n▀▀▀▀ █▀▀▀ ▀▀▀ ▀  ▀ `",
+          "replace_multiline": "heimdall := `\n██╗  ██╗███████╗██╗███╗   ███╗██████╗  █████╗ ██╗     ██╗     \n██║  ██║██╔════╝██║████╗ ████║██╔══██╗██╔══██╗██║     ██║     \n███████║█████╗  ██║██╔████╔██║██║  ██║███████║██║     ██║     \n██╔══██║██╔══╝  ██║██║╚██╔╝██║██║  ██║██╔══██║██║     ██║     \n██║  ██║███████╗██║██║ ╚═╝ ██║██████╔╝██║  ██║███████╗██████╗\n╚═╝  ╚═╝╚══════╝╚═╝╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝╚══════╝╚═════╝`"
+        }
+      ]
+    },
+    {
+      "name": "Status Bar",
+      "files": ["vendor/opencode/packages/tui/internal/components/status/status.go"],
+      "patterns": [
+        {
+          "search": "open := base(\"open\")",
+          "replace": "heim := base(\"heim\")"
+        },
+        {
+          "search": "code := emphasis(\"code\")",
+          "replace": "dall := emphasis(\"dall\")"
+        },
+        {
+          "search": "content := open + code",
+          "replace": "content := heim + dall"
+        }
+      ]
+    }
+  ],
+  "config": {
+    "backup": true,
+    "verbose": true,
+    "stop_on_error": false,
+    "create_patch_after": true
+  }
+}
