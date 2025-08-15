@@ -4,6 +4,7 @@ vendor/opencode/
 
 # Dependencies
 node_modules/
+vendor/opencode/node_modules/
 bun.lockb
 
 # Build artifacts
@@ -42,3 +43,8 @@ coverage/
 # OS files
 Thumbs.db
 desktop.ini
+
+# Cleanup scripts (temporary)
+cleanup.sh
+reorganize.sh
+execute_cleanup.sh

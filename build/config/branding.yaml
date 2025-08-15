@@ -1,0 +1,102 @@
+# Heimdall Branding Configuration
+version: 1.0
+
+# Branding transformations
+branding:
+  from: "opencode"
+  to: "heimdall"
+  
+  # Specific replacements
+  replacements:
+    - pattern: "opencode"
+      replace: "heimdall"
+      case_sensitive: true
+    
+    - pattern: "OpenCode"
+      replace: "Heimdall"
+      case_sensitive: true
+    
+    - pattern: "OPENCODE"
+      replace: "HEIMDALL"
+      case_sensitive: true
+    
+    - pattern: "Opencode"
+      replace: "Heimdall"
+      case_sensitive: true
+    
+    - pattern: "open-code"
+      replace: "heimdall"
+      case_sensitive: true
+    
+    - pattern: "open_code"
+      replace: "heimdall"
+      case_sensitive: true
+
+# Whitelist patterns that should NOT be changed
+whitelist:
+  - pattern: "github.com/sst/opencode"
+    reason: "Original repository URL must be preserved"
+  
+  - pattern: "Copyright.*OpenCode"
+    reason: "Legal attribution must be preserved"
+  
+  - pattern: "@opencode/"
+    reason: "NPM package references"
+  
+  - file: "CHANGELOG.md"
+    reason: "Historical record"
+  
+  - file: "LICENSE"
+    reason: "Legal document"
+  
+  - file: ".git"
+    reason: "Git history"
+  
+  - path: "node_modules/"
+    reason: "External dependencies"
+
+# Critical paths that MUST be clean of branding issues
+critical_paths:
+  - "package.json"
+  - "bin/"
+  - "src/cli/"
+  - "src/index.ts"
+  - "README.md"
+  - "**/*.md"
+
+# File patterns to check
+check_patterns:
+  - "**/*.ts"
+  - "**/*.js"
+  - "**/*.tsx"
+  - "**/*.jsx"
+  - "**/*.json"
+  - "**/*.md"
+  - "**/*.yaml"
+  - "**/*.yml"
+  - "**/bin/*"
+  - "**/scripts/*"
+
+# File patterns to skip
+skip_patterns:
+  - "**/*.png"
+  - "**/*.jpg"
+  - "**/*.jpeg"
+  - "**/*.gif"
+  - "**/*.ico"
+  - "**/*.svg"
+  - "**/*.woff"
+  - "**/*.woff2"
+  - "**/*.ttf"
+  - "**/*.otf"
+  - "**/*.exe"
+  - "**/*.dll"
+  - "**/*.so"
+  - "**/*.dylib"
+  - "**/*.zip"
+  - "**/*.tar"
+  - "**/*.gz"
+  - "**/node_modules/**"
+  - "**/.git/**"
+  - "**/dist/**"
+  - "**/.build/**"

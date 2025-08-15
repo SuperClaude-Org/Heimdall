@@ -1,8 +1,8 @@
 # Heimdall CLI
 
 ```
-╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  
-╠═╣║╣ ║║║║ ║║╠═╣║  ║  
+╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦
+╠═╣║╣ ║║║║ ║║╠═╣║  ║
 ╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝
 ```
 
@@ -11,6 +11,7 @@
 ## Overview
 
 Heimdall is a customized version of the opencode CLI featuring:
+
 - 🤖 **AI-Powered Assistance** - Claude, GPT-4, and other models
 - ⚡ **Zig Build System** - Fast, reliable builds with intelligent patching
 - 🔧 **Smart Patching** - Fuzzy matching and automatic conflict resolution
@@ -20,6 +21,7 @@ Heimdall is a customized version of the opencode CLI featuring:
 ## Quick Start
 
 ### Prerequisites
+
 - Zig compiler (0.11.0 or later)
 - Git
 - Bun runtime (optional, for JavaScript dependencies)
@@ -116,41 +118,34 @@ See [docs/architecture/PATCHING_SYSTEM.md](docs/architecture/PATCHING_SYSTEM.md)
 
 ## Documentation
 
-- **[Architecture](docs/architecture/)** - System design and internals
-- **[Development](docs/development/)** - Contributing and development guides
-- **[User Guide](docs/user/)** - Usage and configuration
+- [Architecture](docs/architecture/) - System design and internals
+- [Development](docs/development/) - Developer guides
+- [User Guide](docs/user/) - Configuration and usage
 
-## Development
-
-### Building from Source
+## Testing
 
 ```bash
-# Build Zig components
-cd build
-zig build -Doptimize=ReleaseFast
+# Run all tests
+npm test
 
-# Run tests
-zig build test
-```
-
-### Creating Patches
-
-```bash
-# Interactive patch creation
-./build/bin/heimdall-patcher create my-feature
-
-# Manual creation
-# Create build/patches/my-feature.hpatch.json
+# Specific test suites
+npm run test:unit
+npm run test:integration
+npm run test:patch
 ```
 
 ## Contributing
 
-See [docs/development/CONTRIBUTING.md](docs/development/CONTRIBUTING.md) for guidelines.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Write/update tests
+5. Submit a pull request
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details.
+MIT License - See LICENSE file for details
 
 ## Acknowledgments
 
-Built on top of [opencode](https://github.com/opencodeco/opencode) by the SST team.
+Built on top of [opencode](https://github.com/opencodeco/opencode) by the opencode team.

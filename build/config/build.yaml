@@ -1,0 +1,50 @@
+# Heimdall Build Configuration
+version: 1.0
+
+# Source repository settings
+source:
+  repository: https://github.com/sst/opencode.git
+  branch: dev
+  path: vendor/opencode
+
+# Build settings
+build:
+  temp_dir: .build/heimdall
+  output_dir: dist
+  binary_name: heimdall
+  clean_after_build: false
+
+# Patch settings
+patches:
+  directory: patcher/patches
+  auto_fix: true
+  fail_on_conflict: false
+  confidence_threshold: 0.8
+
+# Transformation settings
+transformations:
+  # Package name replacements
+  - from: "opencode"
+    to: "heimdall"
+  - from: "OpenCode"
+    to: "Heimdall"
+  - from: "OPENCODE"
+    to: "HEIMDALL"
+  - from: "Opencode"
+    to: "Heimdall"
+
+# Compile settings
+compile:
+  optimizer: ReleaseFast
+  standalone: true
+  compress: true
+  targets:
+    - linux-x64
+    - darwin-arm64
+    - win32-x64
+
+# Hooks (optional)
+hooks:
+  pre_build: null
+  post_build: null
+  on_conflict: null
