@@ -15,6 +15,12 @@
     "patch:revert": "node scripts/patch-manager.js revert",
     "patch:list": "node scripts/patch-manager.js list",
     "patch:create": "bash scripts/create-patch.sh",
+    "patcher:build": "cd patcher && zig build -Doptimize=ReleaseFast",
+    "patcher:test": "cd patcher && zig build test",
+    "patcher:apply": "./patcher/zig-out/bin/heimdall-patcher apply",
+    "patcher:verify": "./patcher/zig-out/bin/heimdall-patcher verify",
+    "patcher:list": "./patcher/zig-out/bin/heimdall-patcher list",
+    "patcher:dry-run": "./patcher/zig-out/bin/heimdall-patcher apply --dry-run --verbose",
     "update": "bash scripts/update.sh",
     "postinstall": "cd vendor/opencode && bun install"
   },

@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "name": "enhanced-rules",
+  "description": "Add enhanced rules system support to Heimdall",
+  "compatibility": {
+    "opencode": ">=0.5.0"
+  },
+  "patches": [
+    {
+      "id": "add-rules-config",
+      "description": "Add rules configuration support",
+      "files": ["vendor/opencode/packages/opencode/src/config/config.ts"],
+      "changes": [
+        {
+          "strategy": "inject_after",
+          "matchers": [
+            {"type": "context", "context": "last_import", "pattern": ""},
+            {"type": "exact", "pattern": "import { z } from \"zod\""}
+          ],
+          "content": "import { RulesConfig } from \"../rules/types\""
+        },
+        {
+          "strategy": "inject_after",
+          "matchers": [
+            {"type": "exact", "pattern": "export const ConfigSchema = z.object({"},
+            {"type": "fuzzy", "pattern": "ConfigSchema.*z.object", "confidence_threshold": 0.8}
+          ],
+          "content": "  rules: RulesConfig.optional(),"
+        }
+      ]
+    },
+    {
+      "id": "add-rules-command",
+      "description": "Add rules management CLI command",
+      "files": ["vendor/opencode/packages/opencode/src/cli/index.ts"],
+      "changes": [
+        {
+          "strategy": "inject_after",
+          "matchers": [
+            {"type": "exact", "pattern": ".command(AgentCommand)"},
+            {"type": "fuzzy", "pattern": "command.*Agent", "confidence_threshold": 0.7}
+          ],
+          "content": "  .command(RulesCommand)"
+        },
+        {
+          "strategy": "inject_after",
+          "matchers": [
+            {"type": "context", "context": "last_import", "pattern": ""},
+            {"type": "exact", "pattern": "import { AgentCommand }"}
+          ],
+          "content": "import { RulesCommand } from \"./cmd/rules\""
+        }
+      ]
+    },
+    {
+      "id": "add-rules-types",
+      "description": "Create rules type definitions",
+      "files": ["vendor/opencode/packages/opencode/src/rules/types.ts"],
+      "changes": [
+        {
+          "strategy": "inject_after",
+          "matchers": [
+            {"type": "context", "context": "file_start", "pattern": ""}
+          ],
+          "content": "import { z } from \"zod\"\n\nexport const RuleSchema = z.object({\n  id: z.string(),\n  name: z.string(),\n  description: z.string().optional(),\n  enabled: z.boolean().default(true),\n  priority: z.number().default(0),\n  pattern: z.string().optional(),\n  action: z.enum([\"allow\", \"deny\", \"warn\"]),\n  metadata: z.record(z.any()).optional(),\n})\n\nexport const RulesConfig = z.object({\n  enabled: z.boolean().default(true),\n  rulesFile: z.string().optional(),\n  rules: z.array(RuleSchema).default([]),\n})\n\nexport type Rule = z.infer<typeof RuleSchema>\nexport type RulesConfigType = z.infer<typeof RulesConfig>"
+        }
+      ]
+    }
+  ]
+}

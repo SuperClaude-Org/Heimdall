@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
 /**
  * Pattern-Based Branding System for Heimdall
  * 
@@ -7,10 +11,6 @@
  * instead of traditional line-based patches, making it more resilient to
  * upstream changes.
  */
-
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -300,18 +300,24 @@ const command = args[0] || 'apply';
 
 const applicator = new BrandingApplicator();
 
-switch (command) {
-  case 'apply':
-    applicator.apply();
-    break;
-  case 'revert':
-    applicator.revert();
-    break;
-  case 'validate':
-    process.exit(applicator.validate() ? 0 : 1);
-    break;
-  case 'help':
-    console.log(`
+async function main() {
+  console.log('╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦');
+  console.log('╠═╣║╣ ║║║║ ║║╠═╣║  ║');
+  console.log('╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝');
+  console.log('Pattern-Based Branding System\n');
+
+  switch (command) {
+    case 'apply':
+      applicator.apply();
+      break;
+    case 'revert':
+      applicator.revert();
+      break;
+    case 'validate':
+      process.exit(applicator.validate() ? 0 : 1);
+      break;
+    case 'help':
+      console.log(`
 Usage: node apply-branding.js [command]
 
 Commands:
@@ -322,9 +328,36 @@ Commands:
 
 Configuration is read from: branding-patterns.json
 `);
-    break;
-  default:
-    console.error(`Unknown command: ${command}`);
-    console.log('Use "help" to see available commands');
-    process.exit(1);
+      break;
+    default:
+      console.error(`Unknown command: ${command}`);
+      console.log('Use "help" to see available commands');
+      process.exit(1);
+  }
+
+  // Create patch file if requested
+  if (process.argv.includes('--create-patch')) {
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+      const patchFile = path.join(ROOT_DIR, 'patches', `pattern-based-branding-${timestamp}.patch`);
+      
+      execSync(`cd "${ROOT_DIR}" && git diff vendor/ > "${patchFile}"`, { stdio: 'pipe' });
+      
+      const patchSize = fs.statSync(patchFile).size;
+      if (patchSize > 0) {
+        console.log(`\n✓ Created patch file: ${path.basename(patchFile)}`);
+      } else {
+        fs.unlinkSync(patchFile);
+        console.log('\nNo changes to create patch from');
+      }
+    } catch (error) {
+      console.error('Failed to create patch:', error.message);
+    }
+  }
 }
+
+// Run the main function
+main().catch(error => {
+  console.error('Error:', error);
+  process.exit(1);
+});

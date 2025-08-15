@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "name": "ascii-art-branding",
+  "description": "Add Heimdall ASCII art branding to TUI components",
+  "compatibility": {
+    "opencode": ">=0.5.0"
+  },
+  "patches": [
+    {
+      "id": "tui-status-branding",
+      "description": "Add Heimdall ASCII art to status component",
+      "files": ["vendor/opencode/packages/tui/internal/components/status/status.go"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "OpenCode"},
+            {"type": "fuzzy", "pattern": "OpenCode", "confidence_threshold": 0.95}
+          ],
+          "replacement": "Heimdall",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "inject_after",
+          "matchers": [
+            {"type": "context", "context": "last_import", "pattern": ""},
+            {"type": "exact", "pattern": "package status"}
+          ],
+          "content": "\n// Heimdall ASCII Art\nconst heimdallArt = `\n╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  \n╠═╣║╣ ║║║║ ║║╠═╣║  ║  \n╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝\n`"
+        }
+      ]
+    },
+    {
+      "id": "tui-main-branding",
+      "description": "Update main TUI component branding",
+      "files": ["vendor/opencode/packages/tui/internal/tui/tui.go"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "OpenCode TUI"},
+            {"type": "fuzzy", "pattern": "OpenCode TUI", "confidence_threshold": 0.9}
+          ],
+          "replacement": "Heimdall TUI",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "opencode-tui"},
+            {"type": "fuzzy", "pattern": "opencode-tui", "confidence_threshold": 0.9}
+          ],
+          "replacement": "heimdall-tui",
+          "all_occurrences": true
+        }
+      ]
+    }
+  ]
+}
