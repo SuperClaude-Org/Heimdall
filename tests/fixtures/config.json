@@ -3,18 +3,18 @@
   "rules": [
     "AGENTS.md",
     {
-      "path": "test/rules/global/global-rules.md",
+      "path": "tests/fixtures/rules/10-global.md",
       "priority": 10,
       "required": false
     },
     {
-      "path": "test/rules/project/critical.md",
+      "path": "tests/fixtures/rules/90-critical.md",
       "priority": 90,
       "required": true,
       "maxSize": 10000
     },
     {
-      "path": "test/rules/docs/*.rules.md",
+      "path": "tests/fixtures/rules/50-*.md",
       "priority": 50,
       "enabled": true
     },
@@ -24,7 +24,7 @@
       "required": false
     },
     {
-      "path": "test/rules/project/disabled.md",
+      "path": "tests/fixtures/rules/xx-disabled.md",
       "enabled": false
     }
   ],
@@ -35,6 +35,6 @@
     "cacheDuration": 300
   },
   "instructions": [
-    "test/rules/project/extra-instructions.md"
+    "tests/fixtures/rules/30-instructions.md"
   ]
 }

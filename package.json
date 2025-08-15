@@ -15,6 +15,11 @@
     "patch:create": "./build/bin/heimdall-patcher create",
     "zig:build": "cd build && zig build -Doptimize=ReleaseFast",
     "zig:test": "cd build && zig build test",
+    "test": "./tests/run.sh",
+    "test:quick": "./tests/run.sh --quick",
+    "test:integration": "./tests/run.sh integration",
+    "test:e2e": "./tests/run.sh e2e",
+    "test:unit": "./tests/run.sh unit",
     "clean": "rm -rf .build .zig-cache dist node_modules",
     "postinstall": "cd vendor/opencode && bun install"
   },
