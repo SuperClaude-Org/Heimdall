@@ -419,15 +419,36 @@ fn cmdRollback(allocator: std.mem.Allocator, args: []const []const u8) !void {
 }
 
 fn findPatchFiles(allocator: std.mem.Allocator, list: *std.ArrayList([]const u8)) !void {
-    const patches_dir = std.fs.cwd().openDir("patches", .{ .iterate = true }) catch |err| {
-        // Also try patcher/patches
-        const alt_dir = std.fs.cwd().openDir("patcher/patches", .{ .iterate = true }) catch {
-            return err;
+    // Get the directory where the binary is located
+    const exe_path = try std.fs.selfExePathAlloc(allocator);
+    defer allocator.free(exe_path);
+    
+    const exe_dir = std.fs.path.dirname(exe_path) orelse ".";
+    
+    // Look for patches in ../patches relative to binary location (build/bin/../patches = build/patches)
+    const patches_path = try std.fs.path.join(allocator, &[_][]const u8{ exe_dir, "..", "patches" });
+    defer allocator.free(patches_path);
+    
+    const patches_dir = std.fs.openDirAbsolute(patches_path, .{ .iterate = true }) catch |err| {
+        // Fallback to build/patches from current directory
+        const alt_dir = std.fs.cwd().openDir("build/patches", .{ .iterate = true }) catch {
+            // Final fallback to patches/ from current directory
+            const final_dir = std.fs.cwd().openDir("patches", .{ .iterate = true }) catch {
+                return err;
+            };
+            var iter = final_dir.iterate();
+            while (try iter.next()) |entry| {
+                if (entry.kind == .file and std.mem.endsWith(u8, entry.name, ".hpatch.json")) {
+                    const full_path = try std.fmt.allocPrint(allocator, "patches/{s}", .{entry.name});
+                    try list.append(full_path);
+                }
+            }
+            return;
         };
         var iter = alt_dir.iterate();
         while (try iter.next()) |entry| {
             if (entry.kind == .file and std.mem.endsWith(u8, entry.name, ".hpatch.json")) {
-                const full_path = try std.fmt.allocPrint(allocator, "patcher/patches/{s}", .{entry.name});
+                const full_path = try std.fmt.allocPrint(allocator, "build/patches/{s}", .{entry.name});
                 try list.append(full_path);
             }
         }
@@ -437,7 +458,8 @@ fn findPatchFiles(allocator: std.mem.Allocator, list: *std.ArrayList([]const u8)
     var iter = patches_dir.iterate();
     while (try iter.next()) |entry| {
         if (entry.kind == .file and std.mem.endsWith(u8, entry.name, ".hpatch.json")) {
-            const full_path = try std.fmt.allocPrint(allocator, "patches/{s}", .{entry.name});
+            // Use absolute path for patches found relative to binary
+            const full_path = try std.fs.path.join(allocator, &[_][]const u8{ patches_path, entry.name });
             try list.append(full_path);
         }
     }

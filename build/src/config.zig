@@ -5,21 +5,29 @@ pub const BuildConfig = struct {
     build: BuildSettings,
     patches: PatchSettings,
     allocator: std.mem.Allocator,
-    
+
     pub fn load(allocator: std.mem.Allocator, path: []const u8) !BuildConfig {
         // Default path if not specified
         const config_path = if (std.mem.eql(u8, path, "config/build.yaml"))
             "build/config/build.yaml"
         else
             path;
-            
-        const file = try std.fs.cwd().openFile(config_path, .{});
-        defer file.close();
+
+        // Try to open the config file to verify it exists
+        if (std.fs.cwd().openFile(config_path, .{})) |file| {
+            defer file.close();
+            // TODO: Implement YAML parsing when file exists
+        } else |err| {
+            // If file doesn't exist, use defaults
+            if (err == error.FileNotFound) {
+                std.debug.print("Config file not found at {s}, using defaults\n", .{config_path});
+            } else {
+                return err;
+            }
+        }
 
         // For now, return default configuration
-        // TODO: Implement YAML parsing
-        _ = path;
-        
+
         return BuildConfig{
             .source = SourceSettings{
                 .repository = "https://github.com/opencode/opencode.git",
@@ -39,14 +47,14 @@ pub const BuildConfig = struct {
             .allocator = allocator,
         };
     }
-    
+
     pub fn loadFromString(allocator: std.mem.Allocator, content: []const u8) !BuildConfig {
         // Parse YAML/JSON content
         // For now, return default
         _ = content;
         return load(allocator, "");
     }
-    
+
     pub fn deinit(self: *BuildConfig) void {
         // Free allocated memory if needed
         _ = self;
@@ -75,7 +83,7 @@ pub const BrandingConfig = struct {
     transformations: []Transformation,
     whitelist: []WhitelistEntry,
     critical_paths: [][]const u8,
-    
+
     pub fn loadDefault(allocator: std.mem.Allocator) !BrandingConfig {
         _ = allocator;
         return BrandingConfig{
