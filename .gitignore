@@ -1,64 +1,44 @@
+# Vendor (pulled fresh during build)
+vendor/
+vendor/opencode/
+
 # Dependencies
 node_modules/
-.pnp
-.pnp.js
+bun.lockb
 
-# Build outputs
-dist/
-build/
-*.tsbuildinfo
+# Build artifacts
+/build/.zig-cache/
+/build/zig-out/
+/.build/
+/dist/
+*.o
+*.a
 
-# Logs
-logs/
+# Backups
+*.bak
+*.backup
+/.heimdall-backup/
+
+# Temporary files
+*.tmp
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+*.swp
+.DS_Store
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
-.DS_Store
+*.iml
 
-# Testing
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test coverage
 coverage/
-.nyc_output
+*.lcov
 
-# Cache
-.npm
-.eslintcache
-.cache/
-
-# Temporary files
-tmp/
-temp/
-
-# User configuration
-heimdall.json
-opencode.json
-
-# Session data
-.heimdall/
-.opencode/
-
-# Lock files (we use bun.lock)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# OS files
+Thumbs.db
+desktop.ini

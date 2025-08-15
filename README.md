@@ -1,147 +1,156 @@
 # Heimdall CLI
 
-> AI-powered CLI assistant based on opencode
-
 ```
 ╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  
 ╠═╣║╣ ║║║║ ║║╠═╣║  ║  
 ╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝
 ```
 
+> AI-powered CLI assistant with enhanced capabilities
+
 ## Overview
 
-Heimdall is a customized version of the opencode CLI with additional branding and features. It uses a clean vendor + patches approach to maintain customizations while allowing easy updates from upstream.
+Heimdall is a customized version of the opencode CLI featuring:
+- 🤖 **AI-Powered Assistance** - Claude, GPT-4, and other models
+- ⚡ **Zig Build System** - Fast, reliable builds with intelligent patching
+- 🔧 **Smart Patching** - Fuzzy matching and automatic conflict resolution
+- 📦 **Clean Architecture** - Vendor management with pristine upstream
+- 🎨 **Custom Branding** - Heimdall identity throughout
 
-## Features
-
-- 🤖 **AI-Powered Assistance** - Leverage Claude, GPT-4, and other models
-- 🔧 **Code Generation** - Generate code, tests, and documentation
-- 📦 **Clean Vendor Management** - Pristine vendor with patch-based customizations
-- 🎨 **Heimdall Branding** - Custom branding and identity
-- 🔄 **Easy Updates** - Pull latest opencode improvements with one command
-- ⚡ **Fast Performance** - Built with Bun for speed
-
-## Installation
+## Quick Start
 
 ### Prerequisites
-
-- Node.js >= 18.0.0
-- Bun runtime
+- Zig compiler (0.11.0 or later)
 - Git
+- Bun runtime (optional, for JavaScript dependencies)
 
-### Quick Start
+### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/SuperClaude-Org/heimdall.git
+git clone https://github.com/yourusername/heimdall.git
 cd heimdall
 
-# Install dependencies
-bun install
+# Run setup (initializes vendor directory and builds)
+bash setup.sh
 
-# Apply customization patches
-npm run patch:apply
+# Or manually:
+# 1. Clone opencode
+git clone https://github.com/opencodeco/opencode.git vendor/opencode
 
-# Run Heimdall
-./bin/heimdall --help
+# 2. Build the system
+cd build && zig build && cd ..
+
+# 3. Run the build pipeline
+./build/bin/heimdall-build
 ```
 
-## Usage
+> **Note**: The `vendor/` directory is not included in the repository to keep it lightweight. It will be initialized with fresh opencode source during setup.
 
-```bash
-# Show help
-heimdall --help
-
-# Check version
-heimdall --version
-
-# Start interactive mode
-heimdall
-
-# Run a command
-heimdall run "explain this code"
-```
-
-## Architecture
-
-Heimdall uses a simple and maintainable architecture:
+## Project Structure
 
 ```
 heimdall/
-├── vendor/opencode/  # Pristine opencode (never modified)
-├── patches/          # Git patches for customizations
-├── bin/heimdall      # Simple launcher script
-└── scripts/          # Maintenance scripts
+├── build/              # Zig-based build system
+│   ├── src/           # Source code (Zig)
+│   ├── patches/       # Patch definitions (.hpatch.json)
+│   ├── config/        # Build configurations
+│   └── bin/           # Compiled binaries
+├── docs/              # Documentation
+│   ├── architecture/  # System design docs
+│   ├── development/   # Developer guides
+│   └── user/         # User documentation
+├── config/           # Application configuration
+└── tests/            # Test suites
 ```
 
-### How It Works
+> **Note**: `vendor/opencode/` is git-ignored and pulled fresh during setup
 
-1. **Vendor**: opencode is vendored via git subtree - never modified directly
-2. **Patches**: All customizations are git patches in `patches/`
-3. **Launcher**: Simple script that runs opencode with our environment
-4. **Updates**: Pull upstream, reapply patches, done!
+## Build System
 
-## Customization
+Heimdall uses a sophisticated 6-stage build pipeline:
 
-### Apply Existing Patches
-```bash
-npm run patch:apply
-```
+1. **Update** - Pull latest from upstream
+2. **Prepare** - Set up build environment
+3. **Transform** - Apply patches and branding
+4. **Verify** - Check completeness
+5. **Build** - Compile binaries
+6. **Finalize** - Package and cleanup
 
-### Create New Customization
-```bash
-# 1. Make changes to vendor files
-vim vendor/opencode/...
-
-# 2. Create patch
-git diff vendor/ > patches/003-my-feature.patch
-
-# 3. Revert vendor and test patch
-git checkout vendor/
-npm run patch:apply
-```
-
-## Updating from Upstream
+### Commands
 
 ```bash
-# Automatic update
-npm run update
+# Full build
+npm run build
 
-# This will:
-# 1. Revert patches
-# 2. Pull latest opencode
-# 3. Reapply patches
-# 4. Report any conflicts
+# Dry run (no changes)
+npm run build:dry
+
+# Verbose output
+npm run build:verbose
+
+# Force through errors
+npm run build:force
+
+# Patch management
+npm run patch:apply    # Apply patches
+npm run patch:verify   # Verify patches
+npm run patch:list     # List available patches
+npm run patch:create   # Create new patch
+
+# Zig operations
+npm run zig:build      # Build Zig binaries
+npm run zig:test       # Run Zig tests
 ```
 
-## Scripts
+## Patching System
 
-- `npm run dev` - Run Heimdall
-- `npm run patch:apply` - Apply all patches
-- `npm run patch:revert` - Revert all patches
-- `npm run patch:list` - List available patches
-- `npm run update` - Update vendor from upstream
+Heimdall's intelligent patching system features:
+
+- **Fuzzy Matching** - Finds code even when line numbers change
+- **Pattern-Based** - Resilient to upstream modifications
+- **Fallback Strategies** - Multiple approaches to apply changes
+- **Conflict Resolution** - Automatic handling of conflicts
+
+See [docs/architecture/PATCHING_SYSTEM.md](docs/architecture/PATCHING_SYSTEM.md) for details.
 
 ## Documentation
 
-- [Vendor Management](docs/VENDOR_MANAGEMENT.md) - How to manage vendor and patches
+- **[Architecture](docs/architecture/)** - System design and internals
+- **[Development](docs/development/)** - Contributing and development guides
+- **[User Guide](docs/user/)** - Usage and configuration
+
+## Development
+
+### Building from Source
+
+```bash
+# Build Zig components
+cd build
+zig build -Doptimize=ReleaseFast
+
+# Run tests
+zig build test
+```
+
+### Creating Patches
+
+```bash
+# Interactive patch creation
+./build/bin/heimdall-patcher create my-feature
+
+# Manual creation
+# Create build/patches/my-feature.hpatch.json
+```
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch
-3. Make changes (preferably as patches)
-4. Test thoroughly
-5. Submit a pull request
+See [docs/development/CONTRIBUTING.md](docs/development/CONTRIBUTING.md) for guidelines.
 
 ## License
 
 MIT License - See [LICENSE](LICENSE) file for details.
 
-## Credits
+## Acknowledgments
 
-Heimdall is built on top of [opencode](https://github.com/sst/opencode) by SST.
-
----
-
-*Heimdall - Simple, maintainable, powerful*
+Built on top of [opencode](https://github.com/opencodeco/opencode) by the SST team.

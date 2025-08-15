@@ -23,17 +23,14 @@ export type Event =
       type: "storage.write"
     } & EventStorageWrite)
   | ({
-      type: "file.edited"
-    } & EventFileEdited)
-  | ({
-      type: "server.connected"
-    } & EventServerConnected)
-  | ({
       type: "permission.updated"
     } & EventPermissionUpdated)
   | ({
       type: "permission.replied"
     } & EventPermissionReplied)
+  | ({
+      type: "file.edited"
+    } & EventFileEdited)
   | ({
       type: "session.updated"
     } & EventSessionUpdated)
@@ -46,6 +43,9 @@ export type Event =
   | ({
       type: "session.error"
     } & EventSessionError)
+  | ({
+      type: "server.connected"
+    } & EventServerConnected)
   | ({
       type: "file.watcher.updated"
     } & EventFileWatcherUpdated)
@@ -425,20 +425,6 @@ export type EventStorageWrite = {
   }
 }
 
-export type EventFileEdited = {
-  type: "file.edited"
-  properties: {
-    file: string
-  }
-}
-
-export type EventServerConnected = {
-  type: "server.connected"
-  properties: {
-    [key: string]: unknown
-  }
-}
-
 export type EventPermissionUpdated = {
   type: "permission.updated"
   properties: Permission
@@ -466,6 +452,13 @@ export type EventPermissionReplied = {
     sessionID: string
     permissionID: string
     response: string
+  }
+}
+
+export type EventFileEdited = {
+  type: "file.edited"
+  properties: {
+    file: string
   }
 }
 
@@ -527,6 +520,13 @@ export type EventSessionError = {
       | ({
           name: "MessageAbortedError"
         } & MessageAbortedError)
+  }
+}
+
+export type EventServerConnected = {
+  type: "server.connected"
+  properties: {
+    [key: string]: unknown
   }
 }
 
@@ -1103,6 +1103,35 @@ export type Agent = {
   options: {
     [key: string]: unknown
   }
+}
+
+export type Auth =
+  | ({
+      type: "oauth"
+    } & OAuth)
+  | ({
+      type: "api"
+    } & ApiAuth)
+  | ({
+      type: "wellknown"
+    } & WellKnownAuth)
+
+export type OAuth = {
+  type: "oauth"
+  refresh: string
+  access: string
+  expires: number
+}
+
+export type ApiAuth = {
+  type: "api"
+  key: string
+}
+
+export type WellKnownAuth = {
+  type: "wellknown"
+  key: string
+  token: string
 }
 
 export type EventSubscribeData = {
@@ -1857,6 +1886,33 @@ export type TuiExecuteCommandResponses = {
 }
 
 export type TuiExecuteCommandResponse = TuiExecuteCommandResponses[keyof TuiExecuteCommandResponses]
+
+export type AuthSetData = {
+  body?: Auth
+  path: {
+    id: string
+  }
+  query?: never
+  url: "/auth/{id}"
+}
+
+export type AuthSetErrors = {
+  /**
+   * Bad request
+   */
+  400: _Error
+}
+
+export type AuthSetError = AuthSetErrors[keyof AuthSetErrors]
+
+export type AuthSetResponses = {
+  /**
+   * Successfully set authentication credentials
+   */
+  200: boolean
+}
+
+export type AuthSetResponse = AuthSetResponses[keyof AuthSetResponses]
 
 export type ClientOptions = {
   baseUrl: `${string}://${string}` | (string & {})
