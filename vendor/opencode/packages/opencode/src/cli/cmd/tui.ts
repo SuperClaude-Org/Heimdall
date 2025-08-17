@@ -17,23 +17,23 @@ import { Flag } from "../../flag/flag"
 import { Session } from "../../session"
 
 declare global {
-  const OPENCODE_TUI_PATH: string
+  const HEIMDALL_TUI_PATH: string
 }
 
-if (typeof OPENCODE_TUI_PATH !== "undefined") {
-  await import(OPENCODE_TUI_PATH as string, {
+if (typeof HEIMDALL_TUI_PATH !== "undefined") {
+  await import(HEIMDALL_TUI_PATH as string, {
     with: { type: "file" },
   })
 }
 
 export const TuiCommand = cmd({
   command: "$0 [project]",
-  describe: "start opencode tui",
+  describe: "start heimdall tui",
   builder: (yargs) =>
     yargs
       .positional("project", {
         type: "string",
-        describe: "path to start opencode in",
+        describe: "path to start heimdall in",
       })
       .option("model", {
         type: "string",
@@ -139,8 +139,8 @@ export const TuiCommand = cmd({
           env: {
             ...process.env,
             CGO_ENABLED: "0",
-            OPENCODE_SERVER: server.url.toString(),
-            OPENCODE_APP_INFO: JSON.stringify(app),
+            HEIMDALL_SERVER: server.url.toString(),
+            HEIMDALL_APP_INFO: JSON.stringify(app),
           },
           onExit: () => {
             server.stop()
@@ -180,7 +180,7 @@ export const TuiCommand = cmd({
         UI.empty()
         UI.println(UI.logo("   "))
         const result = await Bun.spawn({
-          cmd: [...getOpencodeCommand(), "auth", "login"],
+          cmd: [...getHeimdallCommand(), "auth", "login"],
           cwd: process.cwd(),
           stdout: "inherit",
           stderr: "inherit",
@@ -194,12 +194,12 @@ export const TuiCommand = cmd({
 })
 
 /**
- * Get the correct command to run opencode CLI
+ * Get the correct command to run heimdall CLI
  * In development: ["bun", "run", "packages/opencode/src/index.ts"]
- * In production: ["/path/to/opencode"]
+ * In production: ["/path/to/heimdall"]
  */
-function getOpencodeCommand(): string[] {
-  // Check if OPENCODE_BIN_PATH is set (used by shell wrapper scripts)
+function getHeimdallCommand(): string[] {
+  // Check if HEIMDALL_BIN_PATH is set (used by shell wrapper scripts)
   if (process.env["OPENCODE_BIN_PATH"]) {
     return [process.env["OPENCODE_BIN_PATH"]]
   }

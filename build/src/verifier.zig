@@ -166,7 +166,7 @@ pub const BrandingVerifier = struct {
         defer self.allocator.free(contents);
         
         // Split into lines for line number tracking
-        var line_iter = std.mem.tokenize(u8, contents, "\n");
+        var line_iter = std.mem.tokenizeAny(u8, contents, "\n");
         var line_num: usize = 1;
         
         while (line_iter.next()) |line| {

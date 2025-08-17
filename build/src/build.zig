@@ -118,7 +118,10 @@ pub const BuildOrchestrator = struct {
         defer git.deinit();
 
         // Check if vendor directory exists
-        var vendor_dir = std.fs.openDirAbsolute(self.config.source.path, .{}) catch |err| {
+        if (self.verbose) {
+            std.debug.print("Checking vendor directory: {s}\n", .{self.config.source.path});
+        }
+        var vendor_dir = std.fs.cwd().openDir(self.config.source.path, .{}) catch |err| {
             if (self.verbose) {
                 std.debug.print("Vendor directory check failed: {}\n", .{err});
             }
@@ -128,6 +131,22 @@ pub const BuildOrchestrator = struct {
             };
         };
         vendor_dir.close();
+
+        // Check if it's a git repository
+        const git_path = try std.fs.path.join(self.allocator, &[_][]const u8{ self.config.source.path, ".git" });
+        defer self.allocator.free(git_path);
+        
+        if (std.fs.cwd().openDir(git_path, .{})) |git_dir| {
+            var git_dir_mut = git_dir;
+            git_dir_mut.close();
+            // It's a git repo, proceed with git operations
+        } else |_| {
+            // Not a git repo, skip git operations
+            return StageResult{
+                .success = true,
+                .message = try self.allocator.dupe(u8, "Vendor directory ready (no git operations needed)"),
+            };
+        }
 
         // Pull latest from upstream
         var result = try git.pullUpstream(

@@ -1,15 +1,31 @@
 {
   "version": "1.0",
-  "name": "heimdall-branding",
-  "description": "Apply Heimdall branding to OpenCode",
+  "name": "core-branding",
+  "description": "Core system identifiers and package naming for Heimdall branding",
   "compatibility": {
     "opencode": ">=0.5.0",
     "test_command": "bun test"
   },
   "patches": [
     {
-      "id": "cli-binary-rename",
-      "description": "Rename OpenCode binary references to Heimdall",
+      "id": "package-name-update",
+      "description": "Update package.json name from opencode to heimdall",
+      "files": ["vendor/opencode/packages/opencode/package.json"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "\"name\": \"opencode\""},
+            {"type": "fuzzy", "pattern": "\"name\": \"opencode\"", "confidence_threshold": 0.95}
+          ],
+          "replacement": "\"name\": \"heimdall\"",
+          "all_occurrences": false
+        }
+      ]
+    },
+    {
+      "id": "binary-references",
+      "description": "Update binary file references to use heimdall naming",
       "files": ["vendor/opencode/packages/opencode/bin/opencode"],
       "changes": [
         {
@@ -47,21 +63,12 @@
           ],
           "replacement": "binary=\"heimdall.exe\"",
           "all_occurrences": false
-        },
-        {
-          "strategy": "replace",
-          "matchers": [
-            {"type": "exact", "pattern": "the opencode CLI"},
-            {"type": "fuzzy", "pattern": "opencode CLI", "confidence_threshold": 0.8}
-          ],
-          "replacement": "the heimdall CLI",
-          "all_occurrences": true
         }
       ]
     },
     {
       "id": "server-imports",
-      "description": "Add Installation import to server.ts",
+      "description": "Add core server imports for Heimdall",
       "files": ["vendor/opencode/packages/opencode/src/server/server.ts"],
       "changes": [
         {
@@ -72,47 +79,6 @@
             {"type": "fuzzy", "pattern": "import.*Agent.*from.*agent", "confidence_threshold": 0.7}
           ],
           "content": "import { Installation } from \"../installation\""
-        }
-      ]
-    },
-    {
-      "id": "welcome-message",
-      "description": "Change welcome messages to Heimdall",
-      "files": ["vendor/opencode/packages/opencode/src/**/*.ts"],
-      "changes": [
-        {
-          "strategy": "replace",
-          "matchers": [
-            {"type": "exact", "pattern": "Welcome to OpenCode"},
-            {"type": "fuzzy", "pattern": "Welcome to OpenCode", "confidence_threshold": 0.9}
-          ],
-          "replacement": "Welcome to Heimdall",
-          "all_occurrences": true
-        },
-        {
-          "strategy": "replace",
-          "matchers": [
-            {"type": "exact", "pattern": "OpenCode CLI"},
-            {"type": "fuzzy", "pattern": "OpenCode CLI", "confidence_threshold": 0.85}
-          ],
-          "replacement": "Heimdall CLI",
-          "all_occurrences": true
-        }
-      ]
-    },
-    {
-      "id": "package-name",
-      "description": "Update package.json name fields",
-      "files": ["vendor/opencode/packages/opencode/package.json"],
-      "changes": [
-        {
-          "strategy": "replace",
-          "matchers": [
-            {"type": "exact", "pattern": "\"name\": \"opencode\""},
-            {"type": "fuzzy", "pattern": "\"name\": \"opencode\"", "confidence_threshold": 0.95}
-          ],
-          "replacement": "\"name\": \"heimdall\"",
-          "all_occurrences": false
         }
       ]
     }

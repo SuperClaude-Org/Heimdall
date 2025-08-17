@@ -1,0 +1,113 @@
+{
+  "version": "1.0",
+  "name": "environment-config",
+  "description": "Environment variables and configuration settings for Heimdall branding",
+  "compatibility": {
+    "opencode": ">=0.5.0",
+    "test_command": "bun test"
+  },
+  "patches": [
+    {
+      "id": "environment-variables",
+      "description": "Update environment variable references from OPENCODE to HEIMDALL",
+      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "  // Check if OPENCODE_BIN_PATH is set (used by shell wrapper scripts)"},
+            {"type": "fuzzy", "pattern": "Check if OPENCODE_BIN_PATH", "confidence_threshold": 0.9}
+          ],
+          "replacement": "  // Check if HEIMDALL_BIN_PATH is set (used by shell wrapper scripts)",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "            OPENCODE_SERVER: server.url.toString(),"},
+            {"type": "fuzzy", "pattern": "OPENCODE_SERVER.*server\\.url", "confidence_threshold": 0.9}
+          ],
+          "replacement": "            HEIMDALL_SERVER: server.url.toString(),",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "            OPENCODE_APP_INFO: JSON.stringify(app),"},
+            {"type": "fuzzy", "pattern": "OPENCODE_APP_INFO.*JSON\\.stringify", "confidence_threshold": 0.9}
+          ],
+          "replacement": "            HEIMDALL_APP_INFO: JSON.stringify(app),",
+          "all_occurrences": true
+        }
+      ]
+    },
+    {
+      "id": "global-type-declarations",
+      "description": "Update global type declarations for TUI configuration",
+      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "  const OPENCODE_TUI_PATH: string"},
+            {"type": "fuzzy", "pattern": "OPENCODE_TUI_PATH.*string", "confidence_threshold": 0.9}
+          ],
+          "replacement": "  const HEIMDALL_TUI_PATH: string",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "if (typeof OPENCODE_TUI_PATH !== \"undefined\") {"},
+            {"type": "fuzzy", "pattern": "typeof OPENCODE_TUI_PATH", "confidence_threshold": 0.9}
+          ],
+          "replacement": "if (typeof HEIMDALL_TUI_PATH !== \"undefined\") {",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "  await import(OPENCODE_TUI_PATH as string, {"},
+            {"type": "fuzzy", "pattern": "import\\(OPENCODE_TUI_PATH", "confidence_threshold": 0.9}
+          ],
+          "replacement": "  await import(HEIMDALL_TUI_PATH as string, {",
+          "all_occurrences": true
+        }
+      ]
+    },
+    {
+      "id": "configuration-paths",
+      "description": "Update configuration file paths and constants",
+      "files": ["vendor/opencode/packages/opencode/src/**/*.ts", "vendor/opencode/packages/opencode/src/**/*.js"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "process.env.OPENCODE_CONFIG_PATH"},
+            {"type": "fuzzy", "pattern": "OPENCODE_CONFIG_PATH", "confidence_threshold": 0.9}
+          ],
+          "replacement": "process.env.HEIMDALL_CONFIG_PATH",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "process.env.OPENCODE_DATA_DIR"},
+            {"type": "fuzzy", "pattern": "OPENCODE_DATA_DIR", "confidence_threshold": 0.9}
+          ],
+          "replacement": "process.env.HEIMDALL_DATA_DIR",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "process.env.OPENCODE_LOG_LEVEL"},
+            {"type": "fuzzy", "pattern": "OPENCODE_LOG_LEVEL", "confidence_threshold": 0.9}
+          ],
+          "replacement": "process.env.HEIMDALL_LOG_LEVEL",
+          "all_occurrences": true
+        }
+      ]
+    }
+  ]
+}

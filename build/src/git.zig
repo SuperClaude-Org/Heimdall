@@ -133,7 +133,7 @@ pub const Git = struct {
             
             // Count lines (files) - handle empty output
             if (diff_result.stdout.len > 0) {
-                var iter = std.mem.tokenize(u8, diff_result.stdout, "\n");
+                var iter = std.mem.tokenizeAny(u8, diff_result.stdout, "\n");
                 while (iter.next()) |_| {
                     files_changed += 1;
                 }

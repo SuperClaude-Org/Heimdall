@@ -1,41 +1,33 @@
-# Heimdall CLI Project Overview
+# Heimdall Project Overview
 
 ## Purpose
-Heimdall is a customized version of the opencode CLI featuring AI-powered assistance with enhanced capabilities. It's a developer tool that provides:
-- AI-powered CLI assistant functionality (using Claude, GPT-4, and other models)
-- Intelligent code patching and build system
-- Smart vendor management with upstream synchronization
-- Custom branding and identity
-
-## Tech Stack
-- **Primary Language**: Zig (for build system and patching tools)
-- **Secondary Languages**: TypeScript/JavaScript (for CLI application)
-- **Runtime**: Node.js (>=18.0.0) with Bun as optional runtime
-- **Build System**: Custom Zig-based build pipeline
-- **Package Manager**: npm/bun
-- **Version Control**: Git
-
-## Architecture
-The project consists of:
-1. **Build System** (`build/`) - Zig-based intelligent patcher and build orchestrator
-2. **Configuration** (`config/`) - Application and schema configurations
-3. **Documentation** (`docs/`) - Architecture, development, and user guides
-4. **Tests** (`tests/`) - Test suites and rule definitions
-5. **Vendor Management** - Clean upstream management (vendor/ is git-ignored)
+Heimdall is a customized version of the opencode CLI featuring AI-powered assistance, enhanced with Zig-based build system, smart patching, and Heimdall branding throughout. The project aims to patch the upstream https://github.com/SuperClaude-Org/heimdall_opencode repository with consistent Heimdall branding and UI enhancements.
 
 ## Key Features
-- 6-stage build pipeline (Update → Prepare → Transform → Verify → Build → Finalize)
-- Intelligent patching with fuzzy matching and context-aware strategies
-- Multiple matching strategies (exact, fuzzy, context-based)
-- Confidence scoring for patch matches
-- Backup and rollback support
-- Cross-platform native binaries via Zig
+- AI-Powered Assistance (Claude, GPT-4, and other models)
+- Zig Build System (Fast, reliable builds with intelligent patching)
+- Smart Patching (Fuzzy matching and automatic conflict resolution)
+- Clean Architecture (Vendor management with pristine upstream)
+- Custom Branding (Heimdall identity throughout)
 
-## Dependencies
-- Zig compiler (0.11.0 or later) - for building the patcher
-- Git - for version control and vendor management
-- Node.js/Bun - for JavaScript runtime
-- Various npm packages (glob, yargs, zod, hono, ai, etc.)
+## Tech Stack
+- **Primary**: Zig (build system), TypeScript/JavaScript (application logic)
+- **Build System**: Zig compiler (0.11.0+) with custom build.zig
+- **Runtime**: Bun runtime (optional, for JavaScript dependencies)
+- **Dependencies**: Node.js (18.0.0+), Git
+- **Package Management**: npm scripts for orchestration
 
-## Project Status
-The project is actively developed with a working build system, intelligent patcher, and comprehensive documentation. The vendor directory is managed separately and pulled fresh during setup.
+## Architecture
+- `build/` - Zig-based intelligent build system with 6-stage pipeline
+- `vendor/opencode/` - Git-ignored upstream opencode source (pulled fresh during setup)
+- `config/` - Application configuration
+- `patches/` - JSON-based patch definitions (.hpatch.json format)
+- `docs/` - Architecture, development, and user documentation
+
+## Build Pipeline (6 Stages)
+1. **Update** - Pull latest from upstream
+2. **Prepare** - Set up build environment  
+3. **Transform** - Apply patches and branding
+4. **Verify** - Check completeness
+5. **Build** - Compile binaries
+6. **Finalize** - Package and cleanup

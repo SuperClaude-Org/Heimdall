@@ -21,6 +21,7 @@ import { Permission } from "../permission"
 import { lazy } from "../util/lazy"
 import { Agent } from "../agent/agent"
 import { Auth } from "../auth"
+import { Installation } from "../installation"
 
 const ERRORS = {
   400: {

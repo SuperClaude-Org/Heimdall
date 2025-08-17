@@ -30,9 +30,9 @@ pub const BuildConfig = struct {
 
         return BuildConfig{
             .source = SourceSettings{
-                .repository = "https://github.com/opencode/opencode.git",
+                .repository = "https://github.com/SuperClaude-Org/heimdall_opencode.git",
                 .branch = "main",
-                .path = "/home/anton/opencode-heimdall/vendor/opencode",
+                .path = "vendor/opencode",
             },
             .build = BuildSettings{
                 .temp_dir = ".build/heimdall",

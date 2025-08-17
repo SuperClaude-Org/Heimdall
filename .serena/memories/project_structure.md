@@ -1,130 +1,71 @@
-# Heimdall Project Structure
+# Project Structure
 
 ## Root Directory
 ```
-heimdall/
-├── build/              # Zig-based build system
-├── config/             # Application configuration files
-├── docs/               # Documentation
-├── tests/              # Test suites and test data
-├── vendor/             # External dependencies (git-ignored)
-├── .gitignore          # Git ignore rules
-├── CHANGELOG.md        # Version history
-├── LICENSE             # MIT License
-├── README.md           # Project overview and quick start
-├── package.json        # Node.js dependencies and scripts
-├── setup.sh            # Initial setup script
-├── test_complete_setup.sh  # Integration test script
-└── tsconfig.json       # TypeScript configuration
+heimdall_patcher/
+├── README.md              # Project documentation
+├── LICENSE                # MIT license
+├── VERSION                # Current version (1.0.0)
+├── package.json           # npm configuration and scripts
+├── setup.sh               # Initialization script
+├── tsconfig.json          # TypeScript configuration
+├── CHANGELOG.md           # Version history
+└── .gitignore             # Git ignore patterns
 ```
 
 ## Build System (`build/`)
 ```
 build/
-├── bin/                # Compiled binaries
-│   ├── heimdall-build  # Build orchestrator
-│   └── heimdall-patcher # Patch management tool
-├── config/             # Build configurations
-│   ├── branding.yaml   # Branding configuration
-│   └── build.yaml      # Build pipeline config
-├── patches/            # Patch definitions
-│   ├── ascii-art-branding.hpatch.json
-│   ├── enhanced-rules.hpatch.json
-│   └── heimdall-branding.hpatch.json
-├── src/                # Zig source code
-│   ├── matchers/       # Matching strategies
-│   │   ├── context.zig # Context-aware matching
-│   │   ├── exact.zig   # Exact string matching
-│   │   └── fuzzy.zig   # Fuzzy matching
-│   ├── build.zig       # Build orchestrator
-│   ├── config.zig      # Configuration parser
-│   ├── git.zig         # Git operations
-│   ├── main.zig        # Entry point
-│   ├── patch_format.zig # Patch format definitions
-│   ├── patcher.zig     # Core patching logic
-│   ├── reporter.zig    # Progress reporting
-│   ├── transformer.zig # Code transformations
-│   └── verifier.zig    # Verification logic
-├── build.zig           # Zig build configuration
-└── README.md           # Build system documentation
+├── build.zig              # Main Zig build configuration
+├── README.md              # Build system documentation
+├── bin/                   # Compiled binaries
+│   ├── heimdall           # Main CLI binary
+│   ├── heimdall-patcher   # Patch management tool
+│   └── heimdall-build     # Build orchestrator
+├── src/                   # Zig source code
+│   ├── main.zig           # Main entry point
+│   ├── build.zig          # Build orchestrator
+│   ├── patcher.zig        # Core patching engine
+│   ├── patch_format.zig   # Patch file parsing
+│   ├── config.zig         # Configuration management
+│   ├── transformer.zig    # Code transformation
+│   ├── verifier.zig       # Branding verification
+│   ├── git.zig            # Git operations
+│   ├── reporter.zig       # Progress reporting
+│   └── matchers/          # Pattern matching strategies
+│       ├── exact.zig      # Exact string matching
+│       ├── fuzzy.zig      # Fuzzy/similarity matching
+│       └── context.zig    # Context-aware matching
+├── patches/               # Patch definitions
+│   ├── heimdall-branding.hpatch.json    # Main branding patch
+│   └── ascii-art-branding.hpatch.json   # ASCII art additions
+└── config/                # Build configurations
+    ├── build.yaml         # Build pipeline settings
+    └── branding.yaml      # Branding transformation rules
 ```
 
 ## Configuration (`config/`)
+- Application-level configuration files
+- Runtime settings and environment variables
+
+## Vendor Directory (`vendor/` - Git Ignored)
 ```
-config/
-├── heimdall.json       # Main application config
-└── schema.json         # Configuration schema
+vendor/
+└── opencode/              # Fresh clone of upstream opencode
+    ├── packages/          # Upstream package structure
+    ├── src/              # Source code to be patched
+    └── ...               # All upstream files
 ```
 
-## Documentation (`docs/`)
-```
-docs/
-├── architecture/       # System design documentation
-│   ├── BUILD_SYSTEM.md
-│   ├── PATCHING_SYSTEM.md
-│   └── VENDOR_MANAGEMENT.md
-├── development/        # Developer guides
-│   ├── AGENTS.md
-│   ├── AGENTS_DISCOVERY.md
-│   ├── BUILD.md
-│   ├── ENHANCED_RULES.md
-│   ├── LOGGING.md
-│   └── TESTING.md
-└── user/              # User documentation
-    └── CONFIGURATION.md
-```
+## Key Files
+- **setup.sh**: Initializes vendor/opencode and builds Zig binaries
+- **package.json**: Contains npm scripts for build orchestration
+- **build/patches/*.hpatch.json**: JSON-based patch definitions
+- **build/config/branding.yaml**: Branding transformation configuration
+- **VERSION**: Current project version for releases
 
-## Tests (`tests/`)
-```
-tests/
-├── rules/             # Rule test files
-│   ├── docs/
-│   │   ├── api.rules.md
-│   │   └── style.rules.md
-│   ├── global/
-│   │   └── global-rules.md
-│   └── project/
-│       ├── critical.md
-│       ├── disabled.md
-│       └── extra-instructions.md
-└── heimdall-rules-test.json  # Test configuration
-```
-
-## Vendor Directory (Git-Ignored)
-```
-vendor/                # Not in repository
-└── opencode/         # Cloned during setup
-    ├── packages/     # Opencode packages
-    ├── src/          # Source code
-    └── ...           # Other opencode files
-```
-
-## Build Artifacts (Git-Ignored)
-```
-.build/               # Temporary build directory
-dist/                 # Distribution files
-node_modules/         # Node.js dependencies
-.zig-cache/          # Zig build cache
-```
-
-## Key File Purposes
-
-### Configuration Files
-- `heimdall.json` - Runtime configuration for the CLI
-- `package.json` - Node.js project definition and scripts
-- `tsconfig.json` - TypeScript compiler configuration
-- `build.yaml` - Build pipeline configuration
-- `branding.yaml` - Branding customization settings
-
-### Scripts
-- `setup.sh` - Initializes vendor directory and builds system
-- `test_complete_setup.sh` - Full integration test
-- `heimdall-build` - Main build orchestrator
-- `heimdall-patcher` - Patch management tool
-
-### Documentation
-- `README.md` - Project overview and quick start
-- `CHANGELOG.md` - Version history and changes
-- Architecture docs - System design and internals
-- Development docs - How to develop and test
-- User docs - How to configure and use
+## Build Artifacts (Generated)
+- `build/bin/heimdall-*`: Compiled Zig binaries
+- `.zig-cache/`: Zig compilation cache
+- `dist/`: Final build output
+- `node_modules/`: JavaScript dependencies

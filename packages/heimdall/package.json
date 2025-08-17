@@ -1,0 +1,31 @@
+{
+  "name": "heimdall",
+  "version": "1.0.0",
+  "description": "Heimdall - Unified Build System for OpenCode transformation",
+  "bin": {
+    "heimdall": "./bin/heimdall",
+    "heimdall-build": "./bin/heimdall-build",
+    "heimdall-patcher": "./bin/heimdall-patcher"
+  },
+  "scripts": {
+    "build": "cd ../../build && zig build -Doptimize=ReleaseFast",
+    "install": "npm link",
+    "test": "heimdall build --dry-run"
+  },
+  "keywords": [
+    "build-system",
+    "heimdall",
+    "opencode",
+    "transformation",
+    "zig"
+  ],
+  "author": "Heimdall Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/heimdall.git"
+  }
+}

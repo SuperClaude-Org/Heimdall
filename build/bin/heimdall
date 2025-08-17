@@ -1,0 +1,65 @@
+#!/bin/bash
+# Heimdall - Unified Build System
+# Main entry point for Heimdall commands
+
+# Find the actual location of this script (following symlinks)
+SCRIPT_PATH="$(readlink -f "$0")"
+HEIMDALL_BIN_DIR="$(dirname "$SCRIPT_PATH")"
+
+# Check if we have the binaries in the same directory
+if [ -f "$HEIMDALL_BIN_DIR/heimdall-build" ] && [ -f "$HEIMDALL_BIN_DIR/heimdall-patcher" ]; then
+    BUILD_CMD="$HEIMDALL_BIN_DIR/heimdall-build"
+    PATCH_CMD="$HEIMDALL_BIN_DIR/heimdall-patcher"
+else
+    # Fallback to system-wide installation
+    BUILD_CMD="heimdall-build"
+    PATCH_CMD="heimdall-patcher"
+fi
+
+COMMAND="${1:-help}"
+
+case "$COMMAND" in
+    build)
+        shift
+        exec "$BUILD_CMD" "$@"
+        ;;
+    patch)
+        shift
+        exec "$PATCH_CMD" "$@"
+        ;;
+    help|--help|-h)
+        cat << EOF
+╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  
+╠═╣║╣ ║║║║ ║║╠═╣║  ║  
+╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝
+Unified Build System v1.0
+
+Usage: heimdall <command> [options]
+
+Commands:
+    build    Run the full build orchestration
+    patch    Apply patches to source files
+    help     Show this help message
+
+Examples:
+    heimdall build                 # Run full build process
+    heimdall build --dry-run       # Preview build without changes
+    heimdall patch file.patch      # Apply a specific patch
+    heimdall patch --verify        # Verify patches without applying
+
+For command-specific help:
+    heimdall build --help
+    heimdall patch --help
+
+EOF
+        ;;
+    version|--version|-v)
+        echo "Heimdall v1.0.0"
+        echo "Built with Zig (ReleaseFast optimization)"
+        ;;
+    *)
+        echo "Unknown command: $COMMAND"
+        echo "Run 'heimdall help' for usage information"
+        exit 1
+        ;;
+esac

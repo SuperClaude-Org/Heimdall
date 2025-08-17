@@ -1,0 +1,74 @@
+{
+  "version": "1.0",
+  "name": "ui-visual",
+  "description": "Visual branding elements including ASCII art and logos for Heimdall",
+  "compatibility": {
+    "opencode": ">=0.5.0",
+    "test_command": "bun test"
+  },
+  "patches": [
+    {
+      "id": "typescript-logo-replacement",
+      "description": "Replace OpenCode ASCII logo with Heimdall ASCII art in TypeScript UI",
+      "files": ["vendor/opencode/packages/opencode/src/cli/ui.ts"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "  const LOGO = [\n    [`█▀▀█ █▀▀█ █▀▀ █▀▀▄ `, `█▀▀ █▀▀█ █▀▀▄ █▀▀`],\n    [`█░░█ █░░█ █▀▀ █░░█ `, `█░░ █░░█ █░░█ █▀▀`],\n    [`▀▀▀▀ █▀▀▀ ▀▀▀ ▀  ▀ `, `▀▀▀ ▀▀▀▀ ▀▀▀  ▀▀▀`],\n  ]"},
+            {"type": "fuzzy", "pattern": "const LOGO = \\[.*?\\]", "confidence_threshold": 0.8}
+          ],
+          "replacement": "  const LOGO = [\n    [`╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  `],\n    [`╠═╣║╣ ║║║║ ║║╠═╣║  ║  `],\n    [`╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝`],\n  ]",
+          "all_occurrences": false
+        }
+      ]
+    },
+    {
+      "id": "typescript-logo-function",
+      "description": "Update logo function to handle new Heimdall ASCII format and use cyan color",
+      "files": ["vendor/opencode/packages/opencode/src/cli/ui.ts"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "  export function logo(pad?: string) {\n    const result = []\n    for (const row of LOGO) {\n      if (pad) result.push(pad)\n      result.push(Bun.color(\"gray\", \"ansi\"))\n      result.push(row[0])\n      result.push(\"\\x1b[0m\")\n      result.push(row[1])\n      result.push(EOL)\n    }\n    return result.join(\"\").trimEnd()\n  }"},
+            {"type": "fuzzy", "pattern": "export function logo\\(pad\\?\\: string\\).*?return result\\.join\\(\"\"\\)\\.trimEnd\\(\\)\\s*\\}", "confidence_threshold": 0.7}
+          ],
+          "replacement": "  export function logo(pad?: string) {\n    const result = []\n    for (const row of LOGO) {\n      if (pad) result.push(pad)\n      result.push(Bun.color(\"cyan\", \"ansi\"))\n      result.push(row[0])\n      result.push(\"\\x1b[0m\")\n      result.push(EOL)\n    }\n    return result.join(\"\").trimEnd()\n  }",
+          "all_occurrences": false
+        }
+      ]
+    },
+    {
+      "id": "go-tui-ascii-art",
+      "description": "Add Heimdall ASCII art to Go TUI status component",
+      "files": ["vendor/opencode/packages/tui/internal/components/status/status.go"],
+      "changes": [
+        {
+          "strategy": "inject_after",
+          "matchers": [
+            {"type": "context", "context": "last_import", "pattern": ""},
+            {"type": "exact", "pattern": "package status"}
+          ],
+          "content": "\n// Heimdall ASCII Art\nconst heimdallArt = `\n╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  \n╠═╣║╣ ║║║║ ║║╠═╣║  ║  \n╩ ╩╚═╝╩╩ ╩═╩╝╩ ╩╩═╝╩═╝\n`"
+        }
+      ]
+    },
+    {
+      "id": "go-tui-branding-updates",
+      "description": "Update Go TUI component visual branding references",
+      "files": ["vendor/opencode/packages/tui/internal/components/status/status.go", "vendor/opencode/packages/tui/internal/tui/tui.go"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "OpenCode"},
+            {"type": "fuzzy", "pattern": "OpenCode", "confidence_threshold": 0.95}
+          ],
+          "replacement": "Heimdall",
+          "all_occurrences": true
+        }
+      ]
+    }
+  ]
+}

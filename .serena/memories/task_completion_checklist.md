@@ -1,118 +1,38 @@
 # Task Completion Checklist
 
-When completing a development task in Heimdall, follow these steps:
+## Before Making Changes
+- [ ] Check git status and current branch
+- [ ] Ensure vendor/opencode is initialized (run setup.sh if needed)
+- [ ] Verify Zig compiler is available and working
+- [ ] Review existing patches to understand current branding state
 
-## 1. Code Quality Checks
+## During Development
+- [ ] Follow Zig conventions for build system code
+- [ ] Maintain patch file JSON structure and validation
+- [ ] Test changes with --dry-run before applying
+- [ ] Use verbose mode for debugging issues
 
-### For Zig Code (Build System)
-```bash
-# Build and test
-cd build && zig build
-cd build && zig build test
+## Code Quality Checks
+- [ ] Run `npm run zig:build` to verify Zig code compiles
+- [ ] Run `npm run zig:test` for Zig unit tests
+- [ ] Run `npm run patch:verify` to validate patch files
+- [ ] Test patch application with `npm run patch:apply --dry-run`
 
-# Verify binaries work
-./build/bin/heimdall-build --help
-./build/bin/heimdall-patcher --help
-```
+## Before Commit
+- [ ] Run full build pipeline: `npm run build`
+- [ ] Verify all patches apply successfully
+- [ ] Check that branding is consistent throughout
+- [ ] Ensure no build artifacts are included in git
+- [ ] Test the final built system works correctly
 
-### For TypeScript/JavaScript
-```bash
-# Format code with Prettier
-npx prettier --write "**/*.{js,jsx,ts,tsx,json,md}"
+## Documentation Updates
+- [ ] Update README.md if architecture changes
+- [ ] Update version in VERSION file if needed
+- [ ] Document any new patch patterns or strategies
+- [ ] Update build configuration if changed
 
-# Type checking (if TypeScript)
-npx tsc --noEmit
-
-# Linting (if configured)
-# Note: No ESLint currently configured, consider adding
-```
-
-## 2. Testing
-```bash
-# Run test suite
-npm test
-
-# Test build pipeline
-npm run build:dry  # Dry run first
-npm run build      # Actual build
-
-# Integration test
-bash test_complete_setup.sh
-```
-
-## 3. Documentation Updates
-- Update relevant documentation in `docs/`
-- Update README.md if features changed
-- Update CHANGELOG.md with changes
-- Ensure code comments are clear
-
-## 4. Patch Verification
-If patches were modified:
-```bash
-# Verify all patches apply correctly
-npm run patch:verify
-
-# Test patch application
-npm run patch:apply --dry-run
-```
-
-## 5. Git Workflow
-```bash
-# Check what changed
-git status
-git diff
-
-# Stage changes
-git add -A  # or selective git add
-
-# Commit with clear message
-git commit -m "feat: description" # or fix:, docs:, refactor:, test:
-
-# Push to branch
-git push origin <branch-name>
-```
-
-## 6. Build Verification
-```bash
-# Clean build test
-npm run clean
-bash setup.sh
-npm run build
-```
-
-## 7. Final Checks
-- [ ] Code compiles without warnings
-- [ ] Tests pass
-- [ ] Documentation is updated
-- [ ] Commit message is clear
-- [ ] No sensitive information in code
-- [ ] Vendor directory not committed
-- [ ] Build artifacts not committed
-
-## 8. Special Considerations
-
-### When Modifying Build System
-- Test both `heimdall-build` and `heimdall-patcher`
-- Verify all 6 build stages work
-- Check dry-run mode works
-
-### When Modifying Patches
-- Test against fresh vendor checkout
-- Verify fuzzy matching still works
-- Update patch documentation
-
-### When Adding Dependencies
-- Update package.json
-- Document why dependency is needed
-- Consider impact on build size
-
-## 9. Continuous Integration
-If CI is configured:
-- Ensure all CI checks pass
-- Review any automated feedback
-- Address any failing checks
-
-## 10. Communication
-- Update team on significant changes
-- Document breaking changes clearly
-- Create PR with detailed description
+## Final Validation
+- [ ] Run complete test suite: `npm test`
+- [ ] Verify upstream compatibility with original opencode
+- [ ] Check that all Heimdall branding is properly applied
+- [ ] Ensure build system can handle future upstream updates

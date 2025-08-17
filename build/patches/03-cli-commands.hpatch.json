@@ -1,0 +1,138 @@
+{
+  "version": "1.0",
+  "name": "cli-commands",
+  "description": "CLI interface and user-facing text updates for Heimdall branding",
+  "compatibility": {
+    "opencode": ">=0.5.0",
+    "test_command": "bun test"
+  },
+  "patches": [
+    {
+      "id": "tui-command-descriptions",
+      "description": "Update TUI command descriptions and references",
+      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "  describe: \"start opencode tui\""},
+            {"type": "fuzzy", "pattern": "describe.*start opencode tui", "confidence_threshold": 0.9}
+          ],
+          "replacement": "  describe: \"start heimdall tui\"",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "        describe: \"path to start opencode in\""},
+            {"type": "fuzzy", "pattern": "describe.*path to start opencode", "confidence_threshold": 0.9}
+          ],
+          "replacement": "        describe: \"path to start heimdall in\"",
+          "all_occurrences": true
+        }
+      ]
+    },
+    {
+      "id": "command-function-updates",
+      "description": "Update command function names and references",
+      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "          cmd: [...getOpencodeCommand(), \"auth\", \"login\"]"},
+            {"type": "fuzzy", "pattern": "getOpencodeCommand\\(\\)", "confidence_threshold": 0.9}
+          ],
+          "replacement": "          cmd: [...getHeimdallCommand(), \"auth\", \"login\"]",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "function getOpencodeCommand(): string[] {"},
+            {"type": "fuzzy", "pattern": "function getOpencodeCommand", "confidence_threshold": 0.9}
+          ],
+          "replacement": "function getHeimdallCommand(): string[] {",
+          "all_occurrences": false
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": " * Get the correct command to run opencode CLI"},
+            {"type": "fuzzy", "pattern": "Get the correct command to run opencode", "confidence_threshold": 0.9}
+          ],
+          "replacement": " * Get the correct command to run heimdall CLI",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": " * In production: [\"/path/to/opencode\"]"},
+            {"type": "fuzzy", "pattern": "In production.*path/to/opencode", "confidence_threshold": 0.9}
+          ],
+          "replacement": " * In production: [\"/path/to/heimdall\"]",
+          "all_occurrences": true
+        }
+      ]
+    },
+    {
+      "id": "welcome-messages",
+      "description": "Update welcome messages and CLI branding text",
+      "files": ["vendor/opencode/packages/opencode/src/**/*.ts"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "Welcome to OpenCode"},
+            {"type": "fuzzy", "pattern": "Welcome to OpenCode", "confidence_threshold": 0.9}
+          ],
+          "replacement": "Welcome to Heimdall",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "OpenCode CLI"},
+            {"type": "fuzzy", "pattern": "OpenCode CLI", "confidence_threshold": 0.85}
+          ],
+          "replacement": "Heimdall CLI",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "the opencode CLI"},
+            {"type": "fuzzy", "pattern": "opencode CLI", "confidence_threshold": 0.8}
+          ],
+          "replacement": "the heimdall CLI",
+          "all_occurrences": true
+        }
+      ]
+    },
+    {
+      "id": "go-tui-text-updates",
+      "description": "Update Go TUI text and branding references",
+      "files": ["vendor/opencode/packages/tui/internal/tui/tui.go"],
+      "changes": [
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "OpenCode TUI"},
+            {"type": "fuzzy", "pattern": "OpenCode TUI", "confidence_threshold": 0.9}
+          ],
+          "replacement": "Heimdall TUI",
+          "all_occurrences": true
+        },
+        {
+          "strategy": "replace",
+          "matchers": [
+            {"type": "exact", "pattern": "opencode-tui"},
+            {"type": "fuzzy", "pattern": "opencode-tui", "confidence_threshold": 0.9}
+          ],
+          "replacement": "heimdall-tui",
+          "all_occurrences": true
+        }
+      ]
+    }
+  ]
+}
