@@ -10,7 +10,7 @@
     {
       "id": "environment-variables",
       "description": "Update environment variable references from OPENCODE to HEIMDALL",
-      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "files": ["fork/opencode/packages/opencode/src/cli/cmd/tui.ts"],
       "changes": [
         {
           "strategy": "replace",
@@ -44,7 +44,7 @@
     {
       "id": "global-type-declarations",
       "description": "Update global type declarations for TUI configuration",
-      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "files": ["fork/opencode/packages/opencode/src/cli/cmd/tui.ts"],
       "changes": [
         {
           "strategy": "replace",
@@ -78,7 +78,7 @@
     {
       "id": "configuration-paths",
       "description": "Update configuration file paths and constants",
-      "files": ["vendor/opencode/packages/opencode/src/**/*.ts", "vendor/opencode/packages/opencode/src/**/*.js"],
+      "files": ["fork/opencode/packages/opencode/src/**/*.ts", "fork/opencode/packages/opencode/src/**/*.js"],
       "changes": [
         {
           "strategy": "replace",

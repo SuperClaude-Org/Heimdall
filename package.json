@@ -21,7 +21,7 @@
     "test:e2e": "./tests/run.sh e2e",
     "test:unit": "./tests/run.sh unit",
     "clean": "rm -rf .build .zig-cache dist node_modules",
-    "postinstall": "cd vendor/opencode && bun install"
+    "postinstall": "cd fork/opencode && bun install"
   },
   "dependencies": {
     "glob": "^10.3.10",

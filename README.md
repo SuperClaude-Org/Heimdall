@@ -15,7 +15,7 @@ Heimdall is a customized version of the opencode CLI featuring:
 - 🤖 **AI-Powered Assistance** - Claude, GPT-4, and other models
 - ⚡ **Zig Build System** - Fast, reliable builds with intelligent patching
 - 🔧 **Smart Patching** - Fuzzy matching and automatic conflict resolution
-- 📦 **Clean Architecture** - Vendor management with pristine upstream
+- 📦 **Clean Architecture** - Fork management with pristine upstream
 - 🎨 **Custom Branding** - Heimdall identity throughout
 
 ## Quick Start
@@ -38,7 +38,7 @@ bash setup.sh
 
 # Or manually:
 # 1. Clone opencode
-git clone https://github.com/opencodeco/opencode.git vendor/opencode
+git clone https://github.com/opencodeco/opencode.git fork/opencode
 
 # 2. Build the system
 cd build && zig build && cd ..
@@ -47,7 +47,7 @@ cd build && zig build && cd ..
 ./build/bin/heimdall-build
 ```
 
-> **Note**: The `vendor/` directory is not included in the repository to keep it lightweight. It will be initialized with fresh opencode source during setup.
+> **Note**: The `fork/` directory is not included in the repository to keep it lightweight. It will be initialized with fresh opencode source during setup.
 
 ## Project Structure
 
@@ -66,7 +66,7 @@ heimdall/
 └── tests/            # Test suites
 ```
 
-> **Note**: `vendor/opencode/` is git-ignored and pulled fresh during setup
+> **Note**: `fork/opencode/` is git-ignored and pulled fresh during setup
 
 ## Build System
 

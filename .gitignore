@@ -1,10 +1,10 @@
 # Vendor (pulled fresh during build)
-vendor/
-vendor/opencode/
+fork/
+fork/opencode/
 
 # Dependencies
 node_modules/
-vendor/opencode/node_modules/
+fork/opencode/node_modules/
 bun.lockb
 
 # Build artifacts

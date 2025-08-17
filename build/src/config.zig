@@ -32,7 +32,7 @@ pub const BuildConfig = struct {
             .source = SourceSettings{
                 .repository = "https://github.com/SuperClaude-Org/heimdall_opencode.git",
                 .branch = "main",
-                .path = "vendor/opencode",
+                .path = "fork/opencode",
             },
             .build = BuildSettings{
                 .temp_dir = ".build/heimdall",

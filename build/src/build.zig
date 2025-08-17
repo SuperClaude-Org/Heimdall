@@ -50,7 +50,7 @@ pub const BuildOrchestrator = struct {
         try self.printBanner();
         
         // Stage 1: Update
-        try self.reporter.startStage("Update", "Updating vendor/opencode");
+        try self.reporter.startStage("Update", "Updating fork/opencode");
         var update_result = try self.updateVendor();
         defer update_result.deinit(self.allocator);
         try self.reporter.endStage(update_result.success, update_result.message);
@@ -197,7 +197,7 @@ pub const BuildOrchestrator = struct {
         // Create fresh build directory
         try std.fs.cwd().makePath(build_path);
 
-        // Copy vendor/opencode to .build/heimdall
+        // Copy fork/opencode to .build/heimdall
         try self.copyDirectory(self.config.source.path, build_path);
 
         return StageResult{

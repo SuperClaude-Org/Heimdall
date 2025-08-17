@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Heimdall Setup Script
-# This script initializes the vendor directory with opencode
+# This script initializes the fork directory with opencode
 
 echo "╦ ╦╔═╗╦╔╦╗╔╦╗╔═╗╦  ╦  "
 echo "╠═╣║╣ ║║║║ ║║╠═╣║  ║  "
@@ -10,36 +10,36 @@ echo "Test Setup"
 echo "=========="
 echo ""
 
-# Check if vendor/opencode already exists
-if [ -d "vendor/opencode" ]; then
-  echo "✓ vendor/opencode already exists"
+# Check if fork/opencode already exists
+if [ -d "fork/opencode" ]; then
+  echo "✓ fork/opencode already exists"
   echo ""
   read -p "Do you want to update it? (y/n) " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Updating vendor/opencode..."
-    cd vendor/opencode
+    echo "Updating fork/opencode..."
+    cd fork/opencode
     git pull origin main
     cd ../..
   fi
 else
-  echo "Setting up vendor directory..."
-  mkdir -p vendor
+  echo "Setting up fork directory..."
+  mkdir -p fork
 
   echo "Cloning opencode..."
 
   # Try to clone the repository
-  if git clone https://github.com/opencodeco/opencode.git vendor/opencode 2>/dev/null; then
+  if git clone https://github.com/opencodeco/opencode.git fork/opencode 2>/dev/null; then
     echo "✅ Successfully cloned opencode"
   else
     echo "⚠️  Could not clone opencode repository"
-    echo "Creating mock vendor/opencode for testing..."
+    echo "Creating mock fork/opencode for testing..."
 
     # Create a mock opencode structure for testing
-    mkdir -p vendor/opencode
+    mkdir -p fork/opencode
 
     # Create essential mock files
-    cat >vendor/opencode/package.json <<'EOF'
+    cat >fork/opencode/package.json <<'EOF'
 {
   "name": "opencode",
   "version": "1.0.0",
@@ -48,14 +48,14 @@ else
 EOF
 
     # Create a basic source structure
-    mkdir -p vendor/opencode/src
-    echo "// Mock opencode source" >vendor/opencode/src/index.js
+    mkdir -p fork/opencode/src
+    echo "// Mock opencode source" >fork/opencode/src/index.js
 
     # Create a README
-    echo "# Mock Opencode" >vendor/opencode/README.md
-    echo "This is a mock setup for testing Heimdall build system" >>vendor/opencode/README.md
+    echo "# Mock Opencode" >fork/opencode/README.md
+    echo "This is a mock setup for testing Heimdall build system" >>fork/opencode/README.md
 
-    echo "✅ Created mock vendor/opencode for testing"
+    echo "✅ Created mock fork/opencode for testing"
   fi
 fi
 

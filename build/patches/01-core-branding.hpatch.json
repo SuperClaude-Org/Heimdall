@@ -10,7 +10,7 @@
     {
       "id": "package-name-update",
       "description": "Update package.json name from opencode to heimdall",
-      "files": ["vendor/opencode/packages/opencode/package.json"],
+      "files": ["fork/opencode/packages/opencode/package.json"],
       "changes": [
         {
           "strategy": "replace",
@@ -26,7 +26,7 @@
     {
       "id": "binary-references",
       "description": "Update binary file references to use heimdall naming",
-      "files": ["vendor/opencode/packages/opencode/bin/opencode"],
+      "files": ["fork/opencode/packages/opencode/bin/opencode"],
       "changes": [
         {
           "strategy": "replace",
@@ -69,7 +69,7 @@
     {
       "id": "server-imports",
       "description": "Add core server imports for Heimdall",
-      "files": ["vendor/opencode/packages/opencode/src/server/server.ts"],
+      "files": ["fork/opencode/packages/opencode/src/server/server.ts"],
       "changes": [
         {
           "strategy": "inject_after",

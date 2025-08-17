@@ -10,7 +10,7 @@
     {
       "id": "tui-command-descriptions",
       "description": "Update TUI command descriptions and references",
-      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "files": ["fork/opencode/packages/opencode/src/cli/cmd/tui.ts"],
       "changes": [
         {
           "strategy": "replace",
@@ -35,7 +35,7 @@
     {
       "id": "command-function-updates",
       "description": "Update command function names and references",
-      "files": ["vendor/opencode/packages/opencode/src/cli/cmd/tui.ts"],
+      "files": ["fork/opencode/packages/opencode/src/cli/cmd/tui.ts"],
       "changes": [
         {
           "strategy": "replace",
@@ -78,7 +78,7 @@
     {
       "id": "welcome-messages",
       "description": "Update welcome messages and CLI branding text",
-      "files": ["vendor/opencode/packages/opencode/src/**/*.ts"],
+      "files": ["fork/opencode/packages/opencode/src/**/*.ts"],
       "changes": [
         {
           "strategy": "replace",
@@ -112,7 +112,7 @@
     {
       "id": "go-tui-text-updates",
       "description": "Update Go TUI text and branding references",
-      "files": ["vendor/opencode/packages/tui/internal/tui/tui.go"],
+      "files": ["fork/opencode/packages/tui/internal/tui/tui.go"],
       "changes": [
         {
           "strategy": "replace",

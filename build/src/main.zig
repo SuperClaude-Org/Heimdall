@@ -121,7 +121,7 @@ fn printBuildHelp() !void {
     try stdout.print("  --help         Show this help message\n\n", .{});
     
     try stdout.print("STAGES:\n", .{});
-    try stdout.print("  1. Update    - Pull latest vendor/opencode from upstream\n", .{});
+    try stdout.print("  1. Update    - Pull latest fork/opencode from upstream\n", .{});
     try stdout.print("  2. Prepare   - Set up build directory\n", .{});
     try stdout.print("  3. Transform - Apply patches and branding\n", .{});
     try stdout.print("  4. Verify    - Check branding completeness\n", .{});
