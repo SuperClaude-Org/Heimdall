@@ -1,10 +1,8 @@
-# Vendor (pulled fresh during build)
+# Fork (pulled fresh during build)
 fork/
-fork/opencode/
 
 # Dependencies
 node_modules/
-fork/opencode/node_modules/
 bun.lockb
 
 # Build artifacts
