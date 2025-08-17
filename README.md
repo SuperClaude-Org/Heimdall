@@ -30,8 +30,8 @@ Heimdall is a customized version of the opencode CLI featuring:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/heimdall.git
-cd heimdall
+git clone https://github.com/SuperClaude-Org/heimdall_patcher.git
+cd heimdall_patcher
 
 # Run setup (initializes vendor directory and builds)
 bash setup.sh
